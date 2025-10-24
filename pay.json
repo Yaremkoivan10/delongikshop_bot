@@ -1,0 +1,23 @@
+{
+    "mono_card": {
+        "account_name": "Карта Монобанк",
+        "account_number": "4441 1110 4663 2729",
+        "qr_code_url": "https://send.monobank.ua/qr_code_placeholder.png",
+        "instructions": "Переведіть кошти на вказану карту. Обов'язково вкажіть номер замовлення в примітках."
+    },
+    "privat_card": {
+        "account_name": "Карта ПриватБанк",
+        "account_number": "4149 4990 8808 9618",
+        "qr_code_url": "https://send.monobank.ua/qr_code_placeholder.png",
+        "instructions": "Переведіть кошти на вказану карту. Обов'язково вкажіть номер замовлення в примітках."
+    },
+    "mono_link": {
+        "account_name": "Посилання Монобанк",
+        "payment_link": "https://send.monobank.ua/6qVfchWxDZ",
+        "instructions": "Перейдіть за посиланням, щоб завершити оплату. Зробіть скріншот чека та відправте нам."
+    },
+    "prom_payment": {
+        "account_name": "Пром оплата",
+        "instructions": "Якщо ви оплатили замовлення через Пром оплату, будь ласка, надішліть нам квитанцію з банку для підтвердження."
+    }
+}

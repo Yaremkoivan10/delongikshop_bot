@@ -1,0 +1,2525 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кібер-Панель | Адміністратор</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #0d1117;
+            --bg-medium: #161b22;
+            --border-color: #30363d;
+            --accent-cyan: #39d3d3;
+            --accent-glow: rgba(57, 211, 211, 0.2);
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+        }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+        }
+        .cyber-font {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .sidebar {
+            background-color: var(--bg-medium);
+            border-right: 1px solid var(--border-color);
+        }
+        .sidebar-link {
+            transition: all 0.2s ease-in-out;
+            border-left: 3px solid transparent;
+        }
+        .sidebar-link:hover {
+            background-color: var(--border-color);
+            color: var(--accent-cyan);
+            border-left-color: var(--accent-cyan);
+        }
+        .sidebar-link.active {
+            background-color: var(--accent-glow);
+            color: var(--accent-cyan);
+            border-left-color: var(--accent-cyan);
+        }
+        .stat-card {
+            background-color: var(--bg-medium);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px var(--accent-glow);
+            border-color: var(--accent-cyan);
+        }
+        .cyber-table {
+            background-color: var(--bg-medium);
+            border: 1px solid var(--border-color);
+        }
+        .cyber-table th, .cyber-table td {
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 16px;
+        }
+        .cyber-table th {
+            color: var(--accent-cyan);
+            background-color: rgba(57, 211, 211, 0.05);
+        }
+        .cyber-btn {
+            background-color: var(--accent-cyan);
+            color: var(--bg-dark);
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+        .cyber-btn:hover {
+            background-color: #5fffff;
+            box-shadow: 0 0 20px rgba(57, 211, 211, 0.5);
+        }
+        .cyber-btn-danger {
+            background-color: #e53e3e;
+            color: white;
+        }
+        .cyber-btn-danger:hover {
+            background-color: #fc8181;
+        }
+        
+        .modal-backdrop {
+            background-color: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background-color: var(--bg-medium);
+            border: 1px solid var(--accent-cyan);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+        .cyber-input, .cyber-select, .cyber-textarea {
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        .cyber-input:focus, .cyber-select:focus, .cyber-textarea:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+        .cyber-input:disabled {
+            background-color: #2a2f36;
+            cursor: not-allowed;
+        }
+        .cyber-header {
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-cyan);
+        }
+        [title]:hover::after {
+            content: attr(title);
+            position: absolute;
+            top: -100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-10px);
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 10;
+            border: 1px solid var(--border-color);
+        }
+        .hidden {
+            display: none;
+        }
+        .format-btn {
+            background-color: var(--border-color);
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+        .format-btn:hover {
+            background-color: var(--accent-cyan);
+            color: var(--bg-dark);
+        }
+        .loader-backdrop {
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(2px);
+        }
+        .loader {
+            border-top-color: var(--accent-cyan);
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            padding: 2px 5px;
+            border-radius: 50%;
+            background: red;
+            color: white;
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body class="flex h-screen">
+
+    <aside class="w-64 sidebar flex-shrink-0">
+        <div class="p-6 text-center border-b border-gray-700">
+            <h1 class="text-2xl font-bold text-cyan-400 cyber-font">DELONGIKSHOP PANEL</h1>
+            <p id="shopName" class="text-sm text-gray-400"></p>
+        </div>
+        <nav class="mt-6">
+            <a href="#dashboard" class="sidebar-link active flex items-center px-6 py-3 text-gray-300">
+                <i class="fas fa-chart-line w-6"></i><span>Головна</span>
+            </a>
+            <a href="#analytics" class="sidebar-link flex items-center px-6 py-3 text-gray-300">
+                <i class="fas fa-chart-pie w-6"></i><span>Аналітика</span>
+            </a>
+            <a href="#orders" class="sidebar-link flex items-center px-6 py-3 text-gray-300">
+                <i class="fas fa-receipt w-6"></i><span>Замовлення</span>
+            </a>
+            <a href="#clients" class="sidebar-link flex items-center px-6 py-3 text-gray-300">
+                <i class="fas fa-users w-6"></i><span>Клієнти</span>
+            </a>
+            <a href="#support-tickets" class="sidebar-link flex items-center px-6 py-3 text-gray-300">
+                <i class="fas fa-headset w-6"></i><span>Підтримка</span>
+            </a>
+            <a href="#products" class="sidebar-link flex items-center px-6 py-3 text-gray-300">
+                <i class="fas fa-cubes w-6"></i><span>Товари</span>
+            </a>
+            <a href="#categories" class="sidebar-link flex items-center px-6 py-3 text-gray-300">
+                <i class="fas fa-folder-tree w-6"></i><span>Категорії</span>
+            </a>
+            <a href="#bundles" class="sidebar-link flex items-center px-6 py-3 text-gray-300">
+                <i class="fas fa-box-open w-6"></i><span>Колекції</span>
+            </a>
+            <a href="#reviews" class="sidebar-link flex items-center px-6 py-3 text-gray-300">
+                <i class="fas fa-star-half-alt w-6"></i><span>Відгуки</span>
+            </a>
+            <a href="#marketing" class="sidebar-link flex items-center px-6 py-3 text-gray-300">
+                <i class="fas fa-bullhorn w-6"></i><span>Маркетинг</span>
+            </a>
+            <a href="#news" class="sidebar-link flex items-center px-6 py-3 text-gray-300">
+                <i class="fas fa-newspaper w-6"></i><span>Новини</span>
+            </a>
+            <a href="#broadcast" class="sidebar-link flex items-center px-6 py-3 text-gray-300">
+                <i class="fas fa-paper-plane w-6"></i><span>Розсилка</span>
+            </a>
+            <a href="#finances" class="sidebar-link flex items-center px-6 py-3 text-gray-300">
+                <i class="fas fa-wallet w-6"></i><span>Фінанси</span>
+            </a>
+             <a href="#users" class="sidebar-link flex items-center px-6 py-3 text-gray-300">
+                <i class="fas fa-user-shield w-6"></i><span>Користувачі</span>
+            </a>
+            <a href="#file-manager" class="sidebar-link flex items-center px-6 py-3 text-gray-300">
+                <i class="fas fa-folder-open w-6"></i><span>Файловий Менеджер</span>
+            </a>
+            <a href="#settings" class="sidebar-link flex items-center px-6 py-3 text-gray-300">
+                <i class="fas fa-cogs w-6"></i><span>Налаштування</span>
+            </a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 flex flex-col">
+        <header class="bg-gray-800/50 backdrop-blur-sm border-b border-border-color p-4 flex justify-between items-center sticky top-0 z-10">
+            <h2 id="page-title" class="text-2xl font-bold text-cyan-400 cyber-header">Головна Панель</h2>
+            <div class="relative">
+                <button id="notification-bell" class="text-gray-400 hover:text-cyan-400 relative">
+                    <i class="fas fa-bell fa-lg"></i>
+                    <span id="notification-badge" class="notification-badge hidden"></span>
+                </button>
+                <div id="notification-dropdown" class="absolute right-0 mt-2 w-80 bg-bg-medium border border-border-color rounded-lg shadow-lg hidden">
+                    <div class="p-2">
+                        <h3 class="text-sm font-semibold text-gray-400 px-2 py-1">Сповіщення</h3>
+                        <div id="notification-list" class="max-h-80 overflow-y-auto">
+                            <!-- Notifications will be injected here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="flex-1 p-8 overflow-y-auto">
+            <section id="dashboard" class="content-section">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="stat-card rounded-lg p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-cyan-500 bg-opacity-10"><i class="fas fa-hryvnia-sign text-2xl text-cyan-400"></i></div>
+                            <div class="ml-4"><p class="text-gray-400">Загальний дохід</p><p id="total-revenue" class="text-2xl font-bold">0 грн</p></div>
+                        </div>
+                    </div>
+                    <div class="stat-card rounded-lg p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-cyan-500 bg-opacity-10"><i class="fas fa-shopping-cart text-2xl text-cyan-400"></i></div>
+                            <div class="ml-4"><p class="text-gray-400">Замовлень</p><p id="total-orders" class="text-2xl font-bold">0</p></div>
+                        </div>
+                    </div>
+                    <div class="stat-card rounded-lg p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-cyan-500 bg-opacity-10"><i class="fas fa-users text-2xl text-cyan-400"></i></div>
+                            <div class="ml-4"><p class="text-gray-400">Користувачів в боті</p><p id="total-clients" class="text-2xl font-bold">0</p></div>
+                        </div>
+                    </div>
+                     <div class="stat-card rounded-lg p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-cyan-500 bg-opacity-10"><i class="fas fa-user-plus text-2xl text-cyan-400"></i></div>
+                            <div class="ml-4"><p class="text-gray-400">Запрошено по рефералці</p><p id="total-referrals" class="text-2xl font-bold">0</p></div>
+                        </div>
+                    </div>
+                    <div class="stat-card rounded-lg p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-cyan-500 bg-opacity-10"><i class="fas fa-comment-dots text-2xl text-cyan-400"></i></div>
+                            <div class="ml-4"><p class="text-gray-400">Відгуки на модерації</p><p id="pending-reviews" class="text-2xl font-bold">0</p></div>
+                        </div>
+                    </div>
+                    <div class="stat-card rounded-lg p-6 border-red-500/50">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-red-500 bg-opacity-10"><i class="fas fa-exclamation-triangle text-2xl text-red-400"></i></div>
+                            <div class="ml-4"><p class="text-gray-400">Товари без вмісту</p><p id="products-no-content" class="text-2xl font-bold text-red-400">0</p></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="analytics" class="content-section hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="stat-card rounded-lg p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-cyan-500 bg-opacity-10"><i class="fas fa-file-invoice-dollar text-2xl text-cyan-400"></i></div>
+                            <div class="ml-4"><p class="text-gray-400">Середній чек</p><p id="average-check" class="text-2xl font-bold">0 грн</p></div>
+                        </div>
+                    </div>
+                    <div class="stat-card rounded-lg p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-cyan-500 bg-opacity-10"><i class="fas fa-star text-2xl text-cyan-400"></i></div>
+                            <div class="ml-4"><p class="text-gray-400">Відгуки (Схвалено / Всього)</p><p id="review-stats" class="text-lg font-bold"><span class="text-green-400">0</span> / <span class="text-gray-400">0</span></p></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="stat-card rounded-lg p-6">
+                        <h3 class="text-xl font-bold mb-4 text-cyan-400">Дохід за 7 днів</h3>
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                    <div class="stat-card rounded-lg p-6">
+                        <h3 class="text-xl font-bold mb-4 text-cyan-400">Реєстрації за 7 днів</h3>
+                        <canvas id="registrationsChart"></canvas>
+                    </div>
+                    <div class="stat-card rounded-lg p-6 lg:col-span-2">
+                         <h3 class="text-xl font-bold mb-4 text-cyan-400">Топ-5 товарів за продажами</h3>
+                         <div class="overflow-x-auto">
+                            <table class="w-full text-left cyber-table">
+                                <thead>
+                                    <tr>
+                                        <th>Товар</th>
+                                        <th>Продажі</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="top-products-table"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="clients" class="content-section hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left cyber-table rounded-lg">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Ім'я</th>
+                                <th>Телефон</th>
+                                <th>Delon-гіки</th>
+                                <th>Статус</th>
+                                <th>Дії</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clients-table"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="support-tickets" class="content-section hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left cyber-table rounded-lg">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Клієнт</th>
+                                <th>Тема</th>
+                                <th>Статус</th>
+                                <th>Останнє оновлення</th>
+                                <th>Дії</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tickets-table"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="products" class="content-section hidden">
+                <div class="mb-6 flex flex-wrap gap-4 items-center">
+                    <button id="addProductBtn" class="cyber-btn px-4 py-2 rounded-md"><i class="fas fa-plus mr-2"></i>Додати товар</button>
+                    <div class="relative">
+                        <input type="file" id="import-csv" class="hidden" accept=".csv">
+                        <button onclick="document.getElementById('import-csv').click()" class="cyber-btn px-4 py-2 rounded-md bg-green-500 hover:bg-green-400"><i class="fas fa-file-csv mr-2"></i>Імпорт CSV</button>
+                    </div>
+                    <button id="clearProductsBtn" class="cyber-btn-danger px-4 py-2 rounded-md"><i class="fas fa-trash-alt mr-2"></i>Очистити все</button>
+                    <div class="relative flex-grow">
+                        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                        <input type="text" id="productSearchInput" placeholder="Пошук за назвою..." class="cyber-input w-full p-2 pl-10 rounded-md">
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left cyber-table rounded-lg">
+                        <thead>
+                            <tr>
+                                <th>Зображення</th>
+                                <th>Назва</th>
+                                <th>Категорія</th>
+                                <th>Ціна</th>
+                                <th class="text-center">Вміст</th>
+                                <th>Дії</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-table"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="categories" class="content-section hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-bold mb-4 text-cyan-400">Додати нову категорію</h3>
+                        <form id="addCategoryForm" class="flex gap-4">
+                            <input type="text" id="categoryNameInput" placeholder="Назва категорії" class="cyber-input flex-grow p-2 rounded-md" required>
+                            <button type="submit" class="cyber-btn px-4 py-2 rounded-md">Додати</button>
+                        </form>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-4 text-cyan-400">Існуючі категорії</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left cyber-table rounded-lg">
+                                <thead>
+                                    <tr>
+                                        <th>Назва</th>
+                                        <th>Дії</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="categories-table"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="bundles" class="content-section hidden">
+                 <div class="mb-6">
+                    <button id="addBundleBtn" class="cyber-btn px-4 py-2 rounded-md"><i class="fas fa-plus mr-2"></i>Створити колекцію</button>
+                 </div>
+                 <div class="overflow-x-auto">
+                    <table class="w-full text-left cyber-table rounded-lg">
+                        <thead>
+                            <tr>
+                                <th>Назва</th>
+                                <th class="w-1/2">Товари</th>
+                                <th>Знижка</th>
+                                <th>Дії</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bundles-table"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="orders" class="content-section hidden">
+                 <div class="overflow-x-auto">
+                    <table class="w-full text-left cyber-table rounded-lg">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Дата</th>
+                                <th>Клієнт</th>
+                                <th>Товар</th>
+                                <th>Сума</th>
+                                <th>Статус</th>
+                                <th>Дії</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-table"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="reviews" class="content-section hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left cyber-table rounded-lg">
+                        <thead>
+                            <tr>
+                                <th>Товар</th>
+                                <th>Користувач</th>
+                                <th>Рейтинг</th>
+                                <th class="w-1/3">Коментар</th>
+                                <th>Статус</th>
+                                <th>Дії</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reviews-table"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="marketing" class="content-section hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="stat-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-4 text-cyan-400">Акції (Знижки)</h3>
+                        <form id="addDiscountForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end mb-6">
+                            <div>
+                                <label for="discountPercentage" class="block text-sm font-medium text-gray-400 mb-1">Відсоток</label>
+                                <input type="number" id="discountPercentage" class="w-full cyber-input p-2 rounded-md" required min="1" max="100">
+                            </div>
+                            <div>
+                                <label for="discountTarget" class="block text-sm font-medium text-gray-400 mb-1">Застосувати до</label>
+                                <select id="discountTarget" class="w-full cyber-select p-2 rounded-md">
+                                    <option value="all">Усіх товарів</option>
+                                    <option value="specific">Конкретних товарів</option>
+                                </select>
+                            </div>
+                            <div id="specific-products-container" class="hidden md:col-span-2">
+                                 <label for="specificProducts" class="block text-sm font-medium text-gray-400 mb-1">Оберіть товари</label>
+                                 <select id="specificProducts" multiple class="w-full cyber-select p-2 rounded-md h-40"></select>
+                            </div>
+                            <button type="submit" class="cyber-btn px-4 py-2 rounded-md md:col-span-2">Додати акцію</button>
+                        </form>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left cyber-table rounded-lg">
+                                <thead>
+                                    <tr><th>Опис</th><th>%</th><th>Дії</th></tr>
+                                </thead>
+                                <tbody id="discounts-table"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="stat-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-4 text-cyan-400">Промокоди</h3>
+                        <form id="addPromocodeForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end mb-6">
+                            <div>
+                                <label for="promocodeCode" class="block text-sm font-medium text-gray-400 mb-1">Код</label>
+                                <input type="text" id="promocodeCode" class="w-full cyber-input p-2 rounded-md uppercase" required>
+                            </div>
+                            <div>
+                                <label for="promocodePercentage" class="block text-sm font-medium text-gray-400 mb-1">Знижка, %</label>
+                                <input type="number" id="promocodePercentage" class="w-full cyber-input p-2 rounded-md" required min="1" max="100">
+                            </div>
+                            <div>
+                                <label for="promocodeUses" class="block text-sm font-medium text-gray-400 mb-1">К-сть разів</label>
+                                <input type="number" id="promocodeUses" class="w-full cyber-input p-2 rounded-md" required min="1">
+                            </div>
+                            <button type="submit" class="cyber-btn px-4 py-2 rounded-md md:col-span-3">Створити промокод</button>
+                        </form>
+                         <div class="overflow-x-auto">
+                            <table class="w-full text-left cyber-table rounded-lg">
+                                <thead>
+                                    <tr><th>Код</th><th>Знижка</th><th>Залишилось</th><th>Дії</th></tr>
+                                </thead>
+                                <tbody id="promocodes-table"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="stat-card p-6 rounded-lg lg:col-span-2">
+                        <h3 class="text-xl font-bold mb-4 text-cyan-400">Бонусна програма</h3>
+                        <form id="bonusSettingsForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                            <div>
+                                <label for="referralBonus" class="block text-sm font-medium text-gray-400 mb-1">Бонус за реферала (Delon-гіків)</label>
+                                <input type="number" id="referralBonus" class="w-full cyber-input p-2 rounded-md" required min="0">
+                            </div>
+                            <div>
+                                <label for="purchaseBonus" class="block text-sm font-medium text-gray-400 mb-1">Бонус за покупку (%)</label>
+                                <input type="number" id="purchaseBonus" class="w-full cyber-input p-2 rounded-md" required min="0" max="100">
+                            </div>
+                            <button type="submit" class="cyber-btn px-4 py-2 rounded-md self-end">Зберегти бонуси</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <section id="news" class="content-section hidden">
+                <div class="mb-6">
+                    <button id="addNewsBtn" class="cyber-btn px-4 py-2 rounded-md"><i class="fas fa-plus mr-2"></i>Додати новину</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left cyber-table rounded-lg">
+                        <thead>
+                            <tr>
+                                <th class="w-2/3">Текст Новини</th>
+                                <th>Вкладення</th>
+                                <th>Дата створення</th>
+                                <th>Дії</th>
+                            </tr>
+                        </thead>
+                        <tbody id="news-table"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="broadcast" class="content-section hidden">
+                <div class="stat-card p-6 rounded-lg">
+                    <h3 class="text-xl font-bold mb-4 text-cyan-400">Створити розсилку</h3>
+                    <p class="text-sm text-gray-400 mb-4">Повідомлення буде надіслано ВСІМ активним користувачам бота.</p>
+                    <form id="broadcastForm">
+                        <div class="flex items-center gap-2 mb-2">
+                            <button type="button" class="format-btn px-3 py-1 rounded" data-target="broadcastMessage" data-tag="b"><i class="fas fa-bold"></i></button>
+                            <button type="button" class="format-btn px-3 py-1 rounded" data-target="broadcastMessage" data-tag="i"><i class="fas fa-italic"></i></button>
+                            <button type="button" class="format-btn px-3 py-1 rounded" data-target="broadcastMessage" data-tag="code"><i class="fas fa-code"></i></button>
+                            <button type="button" class="format-btn px-3 py-1 rounded" data-target="broadcastMessage" data-tag="a"><i class="fas fa-link"></i></button>
+                        </div>
+                        <textarea id="broadcastMessage" rows="8" class="w-full cyber-textarea p-2 rounded-md" placeholder="Введіть ваше повідомлення тут..."></textarea>
+                        
+                        <div class="mt-4">
+                            <label for="broadcastFile" class="cyber-btn px-4 py-2 rounded-md cursor-pointer inline-block"><i class="fas fa-paperclip mr-2"></i>Прикріпити файл</label>
+                            <input type="file" id="broadcastFile" class="hidden">
+                            <div id="broadcastFilePreview" class="mt-2 text-sm text-gray-400"></div>
+                        </div>
+
+                        <button type="submit" class="cyber-btn px-6 py-2 rounded-md mt-4">Надіслати</button>
+                    </form>
+                </div>
+            </section>
+
+            <section id="finances" class="content-section hidden">
+                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="stat-card p-6 rounded-lg">
+                         <h3 class="text-xl font-bold mb-4 text-cyan-400">Історія транзакцій</h3>
+                         <div class="overflow-y-auto h-96">
+                            <table class="w-full text-left cyber-table">
+                                <thead>
+                                    <tr><th>Дата</th><th>Замовлення</th><th>Сума</th></tr>
+                                </thead>
+                                <tbody id="transactions-table"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="stat-card p-6 rounded-lg">
+                         <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold text-cyan-400">Платіжні методи</h3>
+                            <button id="addPaymentMethodBtn" class="cyber-btn px-4 py-2 rounded-md"><i class="fas fa-plus mr-2"></i>Додати</button>
+                         </div>
+                         <div id="paymentMethodsContainer" class="space-y-4">
+                            <!-- Payment methods will be loaded here -->
+                         </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="users" class="content-section hidden">
+                <div class="mb-6">
+                    <button id="addUserBtn" class="cyber-btn px-4 py-2 rounded-md"><i class="fas fa-user-plus mr-2"></i>Додати користувача</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left cyber-table rounded-lg">
+                        <thead>
+                            <tr>
+                                <th>Логін</th>
+                                <th>Роль</th>
+                                <th>Дата створення</th>
+                                <th>Дії</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table"></tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <!-- NEW SECTION: File Manager -->
+            <section id="file-manager" class="content-section hidden">
+                <div class="stat-card p-6 rounded-lg">
+                    <div class="flex justify-between items-center mb-4">
+                        <div id="fm-breadcrumbs" class="text-lg text-gray-400"></div>
+                        <div class="flex gap-2">
+                            <button id="fm-up-btn" class="cyber-btn px-3 py-1 rounded-md"><i class="fas fa-arrow-up"></i></button>
+                            <button id="fm-create-file-btn" class="cyber-btn px-3 py-1 rounded-md"><i class="fas fa-file-plus"></i> Файл</button>
+                            <button id="fm-create-folder-btn" class="cyber-btn px-3 py-1 rounded-md"><i class="fas fa-folder-plus"></i> Папка</button>
+                        </div>
+                    </div>
+                    <div id="fm-file-list" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        <!-- File and folder icons will be here -->
+                    </div>
+                </div>
+            </section>
+
+            <section id="settings" class="content-section hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="stat-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-4 text-cyan-400">Інформація про магазин</h3>
+                        <form id="shopInfoForm">
+                            <div class="mb-4">
+                                <label for="shopNameInput" class="block text-sm font-medium text-gray-400 mb-1">Назва магазину</label>
+                                <input type="text" id="shopNameInput" class="w-full cyber-input p-2 rounded-md">
+                            </div>
+                            <div class="mb-4">
+                                <label for="shopDescriptionInput" class="block text-sm font-medium text-gray-400 mb-1">Опис магазину</label>
+                                <textarea id="shopDescriptionInput" rows="4" class="w-full cyber-textarea p-2 rounded-md"></textarea>
+                            </div>
+                            <button type="submit" class="cyber-btn px-4 py-2 rounded-md">Зберегти</button>
+                        </form>
+                    </div>
+                    <div class="stat-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-4 text-cyan-400">База знань чат-бота</h3>
+                        <form id="addKnowledgeForm" class="mb-4">
+                            <div class="mb-2">
+                                <label for="chatbotKeywords" class="block text-sm font-medium text-gray-400 mb-1">Ключові слова (через кому)</label>
+                                <input type="text" id="chatbotKeywords" class="w-full cyber-input p-2 rounded-md" required>
+                            </div>
+                            <div class="mb-2">
+                                <label for="chatbotResponse" class="block text-sm font-medium text-gray-400 mb-1">Відповідь</label>
+                                <input type="text" id="chatbotResponse" class="w-full cyber-input p-2 rounded-md" required>
+                            </div>
+                            <button type="submit" class="cyber-btn px-4 py-2 rounded-md">Додати</button>
+                        </form>
+                        <div class="h-64 overflow-y-auto">
+                            <table class="w-full text-left">
+                                <tbody id="chatbot-knowledge-table"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="stat-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-4 text-cyan-400">Резервне копіювання</h3>
+                        <button id="createBackupBtn" class="cyber-btn w-full px-4 py-2 rounded-md mb-4"><i class="fas fa-download mr-2"></i>Створити резервну копію</button>
+                        <h4 class="text-lg font-semibold mb-2 text-gray-300">Доступні копії:</h4>
+                        <div id="backups-list" class="h-40 overflow-y-auto space-y-2">
+                            <!-- Backup list will be populated here -->
+                        </div>
+                    </div>
+                    <div class="stat-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-4 text-cyan-400">Системний журнал</h3>
+                        <div id="system-log-list" class="h-56 overflow-y-auto text-sm space-y-2">
+                            <!-- Log entries will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- MODALS START HERE -->
+    <div id="fileEditorModal" class="fixed inset-0 modal-backdrop flex items-center justify-center hidden">
+        <div class="modal-content rounded-lg p-8 w-full max-w-4xl h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-cyan-400">Редактор Файлу: <span id="fm-editor-filename" class="font-mono"></span></h2>
+                <button class="close-modal-btn text-2xl text-gray-500 hover:text-white">&times;</button>
+            </div>
+            <textarea id="fm-editor-content" class="flex-grow w-full cyber-textarea p-2 rounded-md bg-gray-900 font-mono text-sm"></textarea>
+            <div class="flex justify-end space-x-4 mt-4">
+                <button type="button" class="close-modal-btn px-4 py-2 rounded bg-gray-600 hover:bg-gray-500">Закрити</button>
+                <button id="fm-save-file-btn" class="cyber-btn px-4 py-2 rounded">Зберегти</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="paymentMethodModal" class="fixed inset-0 modal-backdrop flex items-center justify-center hidden">
+        <div class="modal-content rounded-lg p-8 w-full max-w-lg">
+             <h2 id="paymentModalTitle" class="text-2xl font-bold text-cyan-400 mb-6">Додати спосіб оплати</h2>
+             <form id="paymentMethodForm">
+                <input type="hidden" id="paymentMethodId">
+                <div class="space-y-4">
+                    <input type="text" id="paymentAccountName" placeholder="Назва (напр. Карта Монобанк)" class="w-full cyber-input p-2 rounded" required>
+                    <input type="text" id="paymentAccountNumber" placeholder="Номер картки / рахунку (якщо є)" class="w-full cyber-input p-2 rounded">
+                    <input type="text" id="paymentLink" placeholder="Посилання на оплату (якщо є)" class="w-full cyber-input p-2 rounded">
+                    <textarea id="paymentInstructions" placeholder="Інструкції для клієнта" class="w-full cyber-textarea p-2 rounded" rows="3"></textarea>
+                </div>
+                 <div class="flex justify-end space-x-4 mt-8">
+                    <button type="button" class="close-modal-btn px-4 py-2 rounded bg-gray-600 hover:bg-gray-500">Скасувати</button>
+                    <button type="submit" class="cyber-btn px-4 py-2 rounded">Зберегти</button>
+                </div>
+             </form>
+        </div>
+    </div>
+
+    <div id="productModal" class="fixed inset-0 modal-backdrop flex items-center justify-center hidden">
+        <div class="modal-content rounded-lg p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <h2 id="modalTitle" class="text-2xl font-bold text-cyan-400 mb-6">Додати новий товар</h2>
+            <form id="productForm">
+                <input type="hidden" id="productId">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="productName" class="block text-gray-300">Назва товару</label>
+                        <input type="text" id="productName" class="w-full cyber-input mt-1 p-2 rounded" required>
+                    </div>
+                    <div>
+                        <label for="productPrice" class="block text-gray-300">Ціна</label>
+                        <input type="number" id="productPrice" class="w-full cyber-input mt-1 p-2 rounded" required>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <label for="productCategory" class="block text-gray-300">Категорія</label>
+                    <select id="productCategory" class="w-full cyber-select mt-1 p-2 rounded">
+                        <option value="">Без категорії</option>
+                    </select>
+                </div>
+
+                <div class="mt-4">
+                    <label for="productDescription" class="block text-gray-300">Опис</label>
+                    <textarea id="productDescription" rows="4" class="w-full cyber-textarea mt-1 p-2 rounded"></textarea>
+                </div>
+
+                <div class="mt-4">
+                    <label for="productImage" class="block text-gray-300">URL зображення</label>
+                    <input type="text" id="productImage" class="w-full cyber-input mt-1 p-2 rounded">
+                </div>
+
+                <hr class="border-border-color my-6">
+
+                <div>
+                    <h3 class="text-lg font-semibold text-cyan-400 mb-4">Тип цифрового товару</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="productType" class="block text-gray-300">Тип видачі товару</label>
+                            <select id="productType" class="w-full cyber-select mt-1 p-2 rounded">
+                                <option value="link">Посилання / Ключ</option>
+                                <option value="account">Унікальний акаунт</option>
+                            </select>
+                        </div>
+                        <div id="productContentContainer">
+                            <label for="productContent" class="block text-gray-300">Вміст (посилання, ключ)</label>
+                            <input type="text" id="productContent" class="w-full cyber-input mt-1 p-2 rounded" placeholder="https://... або ваш ключ">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-4 mt-8">
+                    <button type="button" class="close-modal-btn px-4 py-2 rounded bg-gray-600 hover:bg-gray-500">Скасувати</button>
+                    <button type="submit" class="cyber-btn px-4 py-2 rounded">Зберегти</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="bundleModal" class="fixed inset-0 modal-backdrop flex items-center justify-center hidden">
+        <div class="modal-content rounded-lg p-8 w-full max-w-2xl">
+            <h2 id="bundleModalTitle" class="text-2xl font-bold text-cyan-400 mb-6">Створити нову колекцію</h2>
+            <form id="bundleForm">
+                <input type="hidden" id="bundleId">
+                <div class="space-y-4">
+                    <input type="text" id="bundleName" placeholder="Назва колекції" class="w-full cyber-input p-2 rounded" required>
+                    <textarea id="bundleDescription" placeholder="Опис колекції" class="w-full cyber-textarea p-2 rounded"></textarea>
+                    <div>
+                        <label for="bundleProducts" class="block mb-2 text-sm font-medium text-gray-300">Виберіть товари для колекції:</label>
+                        <select multiple id="bundleProducts" class="w-full h-40 cyber-select p-2 rounded" required></select>
+                    </div>
+                    <input type="number" id="bundleDiscount" placeholder="Відсоток знижки (напр. 15)" class="w-full cyber-input p-2 rounded" required min="1" max="99">
+                </div>
+                <div class="flex justify-end space-x-4 mt-8">
+                    <button type="button" class="close-modal-btn px-4 py-2 rounded bg-gray-600 hover:bg-gray-500">Скасувати</button>
+                    <button type="submit" class="cyber-btn px-4 py-2 rounded">Зберегти</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="newsModal" class="fixed inset-0 modal-backdrop flex items-center justify-center hidden">
+        <div class="modal-content rounded-lg p-8 w-full max-w-2xl">
+            <h2 id="newsModalTitle" class="text-2xl font-bold text-cyan-400 mb-6">Створити новину</h2>
+            <form id="newsForm">
+                <input type="hidden" id="newsId">
+                <div class="flex items-center gap-2 mb-2">
+                    <button type="button" class="format-btn px-3 py-1 rounded" data-target="newsContent" data-tag="b"><i class="fas fa-bold"></i></button>
+                    <button type="button" class="format-btn px-3 py-1 rounded" data-target="newsContent" data-tag="i"><i class="fas fa-italic"></i></button>
+                    <button type="button" class="format-btn px-3 py-1 rounded" data-target="newsContent" data-tag="code"><i class="fas fa-code"></i></button>
+                    <button type="button" class="format-btn px-3 py-1 rounded" data-target="newsContent" data-tag="a"><i class="fas fa-link"></i></button>
+                </div>
+                <textarea id="newsContent" rows="6" class="w-full cyber-textarea p-2 rounded" placeholder="Текст новини..."></textarea>
+                
+                <div class="mt-4">
+                    <label for="newsFile" class="cyber-btn px-4 py-2 rounded-md cursor-pointer inline-block"><i class="fas fa-paperclip mr-2"></i>Прикріпити файл</label>
+                    <input type="file" id="newsFile" class="hidden">
+                    <div id="newsFilePreview" class="mt-2 text-sm text-gray-400"></div>
+                </div>
+
+                <div class="flex justify-end space-x-4 mt-8">
+                    <button type="button" class="close-modal-btn px-4 py-2 rounded bg-gray-600 hover:bg-gray-500">Скасувати</button>
+                    <button type="submit" class="cyber-btn px-4 py-2 rounded">Зберегти</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="clientDetailsModal" class="fixed inset-0 modal-backdrop flex items-center justify-center hidden">
+        <div class="modal-content rounded-lg p-8 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-start">
+                <h2 id="clientModalTitle" class="text-2xl font-bold text-cyan-400 mb-6">Картка Клієнта</h2>
+                <button class="close-modal-btn text-2xl text-gray-500 hover:text-white">&times;</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="md:col-span-1 space-y-4">
+                    <div class="stat-card p-4 rounded-lg">
+                        <p class="text-sm text-gray-400">ID Клієнта</p>
+                        <p id="client-details-id" class="font-mono text-sm"></p>
+                    </div>
+                    <div class="stat-card p-4 rounded-lg">
+                        <p class="text-sm text-gray-400">Телефон</p>
+                        <p id="client-details-phone" class="text-lg"></p>
+                    </div>
+                    <div class="stat-card p-4 rounded-lg">
+                        <p class="text-sm text-gray-400">Загальна сума покупок (LTV)</p>
+                        <p id="client-details-ltv" class="text-xl font-bold"></p>
+                    </div>
+                    <div class="stat-card p-4 rounded-lg">
+                        <p class="text-sm text-gray-400">Бонусний баланс</p>
+                        <p id="client-details-balance" class="text-xl font-bold"></p>
+                    </div>
+                </div>
+                <div class="md:col-span-2 space-y-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-cyan-400 mb-2">Історія замовлень</h3>
+                        <div id="client-orders-history" class="h-48 overflow-y-auto border border-border-color rounded-lg p-2 space-y-2">
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-cyan-400 mb-2">Нотатки адміністратора</h3>
+                        <div id="client-notes-history" class="h-32 overflow-y-auto border border-border-color rounded-lg p-2 mb-2 space-y-2">
+                        </div>
+                        <form id="addClientNoteForm" class="flex gap-2">
+                            <input type="hidden" id="client-note-id">
+                            <input type="text" id="client-note-input" placeholder="Додати нову нотатку..." class="cyber-input flex-grow p-2 rounded-md">
+                            <button type="submit" class="cyber-btn px-4 py-2 rounded-md">Додати</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="ticketDetailsModal" class="fixed inset-0 modal-backdrop flex items-center justify-center hidden">
+        <div class="modal-content rounded-lg p-8 w-full max-w-2xl">
+            <div class="flex justify-between items-start">
+                <h2 class="text-2xl font-bold text-cyan-400 mb-6">Тікет <span id="ticket-modal-id" class="font-mono"></span></h2>
+                <button class="close-modal-btn text-2xl text-gray-500 hover:text-white">&times;</button>
+            </div>
+            <div id="ticket-conversation" class="h-64 overflow-y-auto border border-border-color p-4 rounded-lg mb-4 space-y-4">
+            </div>
+            <form id="ticketReplyForm">
+                <input type="hidden" id="ticket-reply-id">
+                <textarea id="ticket-reply-message" rows="3" class="w-full cyber-textarea p-2 rounded-md mb-2" placeholder="Ваша відповідь..." required></textarea>
+                <div class="flex justify-between items-center">
+                    <select id="ticket-status-select" class="cyber-select p-2 rounded-md">
+                        <option value="new">Новий</option>
+                        <option value="in_progress">В роботі</option>
+                        <option value="closed">Закритий</option>
+                    </select>
+                    <button type="submit" class="cyber-btn px-4 py-2 rounded-md">Надіслати відповідь</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="addUserModal" class="fixed inset-0 modal-backdrop flex items-center justify-center hidden">
+        <div class="modal-content rounded-lg p-8 w-full max-w-md">
+            <h2 class="text-2xl font-bold text-cyan-400 mb-6">Додати користувача</h2>
+            <form id="addUserForm">
+                <div class="space-y-4">
+                    <input type="text" id="new-user-login" placeholder="Логін" class="w-full cyber-input p-2 rounded" required>
+                    <input type="password" id="new-user-password" placeholder="Пароль" class="w-full cyber-input p-2 rounded" required>
+                    <select id="new-user-role" class="w-full cyber-select p-2 rounded">
+                        <option value="admin">Адміністратор</option>
+                        <option value="manager">Менеджер</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-4 mt-8">
+                    <button type="button" class="close-modal-btn px-4 py-2 rounded bg-gray-600 hover:bg-gray-500">Скасувати</button>
+                    <button type="submit" class="cyber-btn px-4 py-2 rounded">Створити</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="notification" class="fixed bottom-5 right-5 bg-cyan-500 text-white py-2 px-4 rounded-lg shadow-lg opacity-0 transition-opacity duration-300">
+        Сповіщення
+    </div>
+
+    <div id="loader" class="fixed inset-0 loader-backdrop flex items-center justify-center hidden">
+        <div class="loader h-16 w-16 rounded-full border-4 border-t-4 border-gray-200"></div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const API_BASE = '/api';
+            let allProducts = [];
+            let allCategories = [];
+            let allBundles = [];
+            let revenueChartInstance = null;
+            let registrationsChartInstance = null;
+            let currentFMPath = '';
+        
+            const showNotification = (message, isError = false) => {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.className = 'fixed bottom-5 right-5 text-white py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300 opacity-100';
+                notification.classList.add(isError ? 'bg-red-500' : 'bg-cyan-500');
+                setTimeout(() => {
+                    notification.classList.remove('opacity-100');
+                }, 3000);
+            };
+        
+            const loader = document.getElementById('loader');
+            const showLoader = () => loader.classList.remove('hidden');
+            const hideLoader = () => loader.classList.add('hidden');
+        
+            const sidebarLinks = document.querySelectorAll('.sidebar-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
+                    const pageTitle = document.getElementById('page-title');
+                    pageTitle.textContent = link.querySelector('span').textContent;
+
+                    sidebarLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    contentSections.forEach(section => section.classList.toggle('hidden', section.id !== targetId));
+                    
+                    const loadActions = {
+                        'dashboard': loadDashboardStats,
+                        'analytics': loadAnalytics,
+                        'clients': loadClients,
+                        'products': loadProducts,
+                        'categories': loadCategories,
+                        'bundles': loadBundles,
+                        'orders': loadOrders,
+                        'reviews': loadReviews,
+                        'marketing': () => { loadDiscounts(); loadPromocodes(); loadBonusSettings(); },
+                        'news': loadNews,
+                        'support-tickets': loadSupportTickets,
+                        'users': loadUsers,
+                        'file-manager': () => navigateFM(''),
+                        'finances': () => { loadTransactions(); loadPaymentMethods(); },
+                        'settings': () => { loadShopInfo(); loadChatbotKnowledge(); loadBackups(); loadSystemLogs(); }
+                    };
+                    
+                    if (loadActions[targetId]) {
+                        loadActions[targetId]();
+                    }
+                });
+            });
+        
+            const fetchData = async (endpoint) => {
+                try {
+                    const response = await fetch(`${API_BASE}${endpoint}`);
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return await response.json();
+                } catch (error) {
+                    console.error(`Error fetching ${endpoint}:`, error);
+                    showNotification(`Помилка завантаження даних з ${endpoint}`, true);
+                    return null;
+                }
+            };
+        
+            const postData = async (endpoint, data, method = 'POST') => {
+                try {
+                    const response = await fetch(`${API_BASE}${endpoint}`, {
+                        method: method,
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    const result = await response.json();
+                    if (!response.ok) throw new Error(result.message || `HTTP error! status: ${response.status}`);
+                    return result;
+                } catch (error) {
+                    console.error(`Error ${method}ing to ${endpoint}:`, error);
+                    showNotification(`Помилка: ${error.message}`, true);
+                    return null;
+                }
+            };
+            
+            const deleteData = async (endpoint) => {
+                try {
+                    const response = await fetch(`${API_BASE}${endpoint}`, { method: 'DELETE' });
+                    if (!response.ok) {
+                        const err = await response.json();
+                        throw new Error(err.message || `HTTP error! status: ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    console.error(`Error deleting from ${endpoint}:`, error);
+                    showNotification(`Помилка видалення: ${error.message}`, true);
+                    return null;
+                }
+            }
+        
+            const loadDashboardStats = async () => {
+                const stats = await fetchData('/admin/stats');
+                if (!stats) return;
+        
+                document.getElementById('total-revenue').textContent = `${stats.total_revenue || 0} грн`;
+                document.getElementById('total-orders').textContent = stats.total_orders || 0;
+                document.getElementById('total-clients').textContent = stats.total_clients || 0;
+                document.getElementById('total-referrals').textContent = stats.total_referrals || 0;
+                document.getElementById('pending-reviews').textContent = stats.pending_reviews || 0;
+                document.getElementById('products-no-content').textContent = stats.products_no_content || 0;
+            };
+        
+            // --- MODALS ---
+            const modals = document.querySelectorAll('.modal-backdrop');
+            const closeModalBtns = document.querySelectorAll('.close-modal-btn');
+
+            const openModal = (modalId) => {
+                const modal = document.getElementById(modalId);
+                if (modal) modal.classList.remove('hidden');
+            };
+
+            const closeModal = (modal) => {
+                if (modal) modal.classList.add('hidden');
+            };
+
+            closeModalBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    closeModal(e.currentTarget.closest('.modal-backdrop'));
+                });
+            });
+
+            // --- PRODUCTS ---
+            const renderProducts = (products) => {
+                const tableBody = document.getElementById('products-table');
+                tableBody.innerHTML = '';
+                if (!products || products.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="6" class="text-center text-gray-500 py-4">Товари не знайдено.</td></tr>`;
+                    return;
+                }
+                products.forEach(p => {
+                    const category = allCategories.find(c => c.id === p.category_id);
+                    const categoryName = category ? category.name : '<span class="text-gray-500">Без категорії</span>';
+        
+                    let contentStatusIcon;
+                    if (p.product_type === 'account') {
+                        contentStatusIcon = `<i class="fas fa-user-shield text-purple-400" title="Унікальний акаунт"></i>`;
+                    } else if (p.content && p.content.trim() !== '') {
+                        contentStatusIcon = `<i class="fas fa-check-circle text-green-500" title="Вміст додано"></i>`;
+                    } else {
+                        contentStatusIcon = `<i class="fas fa-times-circle text-red-500" title="Вміст ВІДСУТНІЙ!"></i>`;
+                    }
+                    
+                    const row = `
+                        <tr data-id="${p.id}">
+                            <td><img src="${p.image}" alt="${p.name}" class="w-16 h-16 object-cover rounded" onerror="this.src='https://placehold.co/64x64/161b22/c9d1d9?text=IMG'"></td>
+                            <td class="font-semibold">${p.name}</td>
+                            <td>${categoryName}</td>
+                            <td>${p.price} грн</td>
+                            <td class="text-center text-xl relative">${contentStatusIcon}</td>
+                            <td class="space-x-2">
+                                <button class="edit-btn text-cyan-400 hover:text-cyan-200"><i class="fas fa-edit"></i></button>
+                                <button class="delete-btn text-red-500 hover:text-red-300"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+        
+                tableBody.querySelectorAll('.edit-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const id = e.currentTarget.closest('tr').dataset.id;
+                        const product = allProducts.find(p => p.id == id);
+                        openProductModal(product);
+                    });
+                });
+                
+                tableBody.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                         const id = e.currentTarget.closest('tr').dataset.id;
+                         if (confirm('Ви впевнені, що хочете видалити цей товар?')) {
+                             const result = await deleteData(`/products/${id}`);
+                             if(result) {
+                                 showNotification(result.message);
+                                 await loadProducts();
+                                 loadDashboardStats();
+                             }
+                         }
+                    });
+                });
+            };
+            
+            const loadProducts = async () => {
+                allProducts = await fetchData('/products') || [];
+                renderProducts(allProducts);
+            };
+
+            const openProductModal = (product = null) => {
+                document.getElementById('productForm').reset();
+                populateCategorySelect();
+                if (product) {
+                    document.getElementById('modalTitle').textContent = 'Редагувати товар';
+                    document.getElementById('productId').value = product.id;
+                    document.getElementById('productName').value = product.name;
+                    document.getElementById('productPrice').value = product.price;
+                    document.getElementById('productDescription').value = product.description;
+                    document.getElementById('productImage').value = product.image;
+                    document.getElementById('productCategory').value = product.category_id || '';
+                    document.getElementById('productType').value = product.product_type || 'link';
+                    document.getElementById('productContent').value = product.content || '';
+                } else {
+                    document.getElementById('modalTitle').textContent = 'Додати новий товар';
+                    document.getElementById('productId').value = '';
+                }
+                document.getElementById('productType').dispatchEvent(new Event('change'));
+                openModal('productModal');
+            };
+            
+            document.getElementById('addProductBtn').addEventListener('click', () => openProductModal());
+        
+            document.getElementById('productForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const id = document.getElementById('productId').value;
+                const productData = {
+                    name: document.getElementById('productName').value,
+                    price: parseFloat(document.getElementById('productPrice').value),
+                    description: document.getElementById('productDescription').value,
+                    image: document.getElementById('productImage').value || null,
+                    category_id: document.getElementById('productCategory').value || null,
+                    product_type: document.getElementById('productType').value,
+                    content: document.getElementById('productContent').value,
+                };
+        
+                const result = await postData(id ? `/products/${id}` : '/products', productData, id ? 'PUT' : 'POST');
+        
+                if (result) {
+                    showNotification(`Товар успішно ${id ? 'оновлено' : 'додано'}!`);
+                    closeModal(document.getElementById('productModal'));
+                    await loadProducts();
+                    loadDashboardStats();
+                }
+            });
+        
+            document.getElementById('productSearchInput').addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const filteredProducts = allProducts.filter(p => p.name.toLowerCase().includes(searchTerm));
+                renderProducts(filteredProducts);
+            });
+            
+            document.getElementById('import-csv').addEventListener('change', async (e) => {
+                if (e.target.files.length === 0) return;
+                const formData = new FormData();
+                formData.append('file', e.target.files[0]);
+                showLoader();
+                try {
+                    const response = await fetch(`${API_BASE}/products/import`, { method: 'POST', body: formData });
+                    const result = await response.json();
+                    if (!response.ok) throw new Error(result.message);
+                    showNotification(result.message);
+                    loadProducts();
+                } catch(error) {
+                    showNotification(error.message, true);
+                } finally {
+                    hideLoader();
+                    e.target.value = ''; // Reset input
+                }
+            });
+        
+            document.getElementById('clearProductsBtn').addEventListener('click', async () => {
+                if (confirm('ВИ ВПЕВНЕНІ? Ця дія видалить ВСІ товари безповоротно!')) {
+                    const result = await deleteData('/products/clear');
+                    if (result) {
+                        showNotification(result.message);
+                        loadProducts();
+                    }
+                }
+            });
+        
+            // --- CATEGORIES ---
+            const renderCategories = (categories) => {
+                const tableBody = document.getElementById('categories-table');
+                tableBody.innerHTML = '';
+                if (!categories || categories.length === 0) return;
+                categories.forEach(cat => {
+                    const row = `
+                        <tr data-id="${cat.id}">
+                            <td class="font-semibold">${cat.name}</td>
+                            <td><button class="delete-cat-btn text-red-500 hover:text-red-300"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                    `;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+        
+                tableBody.querySelectorAll('.delete-cat-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const id = e.currentTarget.closest('tr').dataset.id;
+                        if (confirm('Видалити категорію? Товари в ній стануть "Без категорії".')) {
+                            const result = await deleteData(`/categories/${id}`);
+                            if (result) {
+                                showNotification(result.message);
+                                await loadCategories();
+                                loadProducts();
+                            }
+                        }
+                    });
+                });
+            };
+        
+            const loadCategories = async () => {
+                allCategories = await fetchData('/categories') || [];
+                renderCategories(allCategories);
+            };
+        
+            document.getElementById('addCategoryForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const nameInput = document.getElementById('categoryNameInput');
+                const name = nameInput.value.trim();
+                if (name) {
+                    const result = await postData('/categories', { name });
+                    if (result) {
+                        showNotification('Категорію додано!');
+                        nameInput.value = '';
+                        loadCategories();
+                    }
+                }
+            });
+        
+            const populateCategorySelect = () => {
+                const select = document.getElementById('productCategory');
+                select.innerHTML = '<option value="">Без категорії</option>';
+                allCategories.forEach(cat => {
+                    select.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+                });
+            };
+            
+            // --- BUNDLES (COLLECTIONS) ---
+            const renderBundles = (bundles) => {
+                const tableBody = document.getElementById('bundles-table');
+                tableBody.innerHTML = '';
+                if(!bundles || bundles.length === 0) return;
+                bundles.forEach(bundle => {
+                    const productNames = bundle.product_ids.map(id => {
+                        const product = allProducts.find(p => p.id === id);
+                        return product ? product.name : '<s>Видалений товар</s>';
+                    }).join(', ');
+                    
+                    const row = `
+                        <tr data-id="${bundle.id}">
+                            <td class="font-semibold">${bundle.name}</td>
+                            <td class="text-sm text-gray-400">${productNames}</td>
+                            <td class="text-green-400 font-bold">${bundle.discount_percentage}%</td>
+                            <td class="space-x-2">
+                                <button class="edit-bundle-btn text-cyan-400 hover:text-cyan-200"><i class="fas fa-edit"></i></button>
+                                <button class="delete-bundle-btn text-red-500 hover:text-red-300"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+                
+                document.querySelectorAll('.edit-bundle-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const id = e.currentTarget.closest('tr').dataset.id;
+                        const bundle = allBundles.find(b => b.id == id);
+                        openBundleModal(bundle);
+                    });
+                });
+        
+                document.querySelectorAll('.delete-bundle-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const id = e.currentTarget.closest('tr').dataset.id;
+                        if (confirm('Видалити цю колекцію?')) {
+                            const result = await deleteData(`/bundles/${id}`);
+                            if (result) {
+                                showNotification(result.message);
+                                loadBundles();
+                            }
+                        }
+                    });
+                });
+            };
+            
+            const loadBundles = async () => {
+                allBundles = await fetchData('/bundles') || [];
+                renderBundles(allBundles);
+            };
+            
+            const populateProductsForBundleForm = () => {
+                const select = document.getElementById('bundleProducts');
+                select.innerHTML = '';
+                allProducts.forEach(p => {
+                    select.innerHTML += `<option value="${p.id}">${p.name}</option>`;
+                });
+            };
+            
+            const openBundleModal = (bundle = null) => {
+                document.getElementById('bundleForm').reset();
+                populateProductsForBundleForm();
+                if (bundle) {
+                    document.getElementById('bundleModalTitle').textContent = 'Редагувати колекцію';
+                    document.getElementById('bundleId').value = bundle.id;
+                    document.getElementById('bundleName').value = bundle.name;
+                    document.getElementById('bundleDescription').value = bundle.description;
+                    document.getElementById('bundleDiscount').value = bundle.discount_percentage;
+                    
+                    const productSelect = document.getElementById('bundleProducts');
+                    bundle.product_ids.forEach(pid => {
+                        const option = productSelect.querySelector(`option[value="${pid}"]`);
+                        if (option) option.selected = true;
+                    });
+                } else {
+                    document.getElementById('bundleModalTitle').textContent = 'Створити нову колекцію';
+                    document.getElementById('bundleId').value = '';
+                }
+                openModal('bundleModal');
+            };
+            
+            document.getElementById('addBundleBtn').addEventListener('click', () => openBundleModal());
+
+            document.getElementById('bundleForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const id = document.getElementById('bundleId').value;
+                const selectedOptions = document.getElementById('bundleProducts').selectedOptions;
+                const product_ids = Array.from(selectedOptions).map(option => option.value);
+        
+                if (product_ids.length < 2) {
+                    showNotification('Колекція повинна містити хоча б 2 товари.', true);
+                    return;
+                }
+        
+                const bundleData = {
+                    name: document.getElementById('bundleName').value,
+                    description: document.getElementById('bundleDescription').value,
+                    product_ids: product_ids,
+                    discount_percentage: parseInt(document.getElementById('bundleDiscount').value)
+                };
+                
+                const method = id ? 'PUT' : 'POST';
+                const url = id ? `/bundles/${id}` : '/bundles';
+        
+                const result = await postData(url, bundleData, method);
+                if (result) {
+                    showNotification(`Колекцію успішно ${id ? 'оновлено' : 'створено'}!`);
+                    closeModal(document.getElementById('bundleModal'));
+                    loadBundles();
+                }
+            });
+
+            // --- ORDERS ---
+            const loadOrders = async () => {
+                 const orders = await fetchData('/orders');
+                 renderOrders(orders);
+            };
+
+            const renderOrders = (orders) => {
+                const tableBody = document.getElementById('orders-table');
+                tableBody.innerHTML = '';
+                if (!orders || orders.length === 0) return;
+
+                orders.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(o => {
+                    const statusClasses = {
+                        'Виконано': 'bg-green-500',
+                        'Нове': 'bg-blue-500',
+                        'Обробляється': 'bg-yellow-500',
+                        'Відправлено': 'bg-purple-500',
+                        'Відхилено': 'bg-red-500',
+                        'Очікує оплати': 'bg-gray-500'
+                    };
+                    const statusColor = statusClasses[o.status] || 'bg-gray-500';
+                    
+                    const row = `
+                        <tr data-id="${o.orderId}">
+                            <td class="text-xs text-gray-500">${o.orderId.substring(0, 8)}</td>
+                            <td>${new Date(o.date).toLocaleString('uk-UA')}</td>
+                            <td>${o.customer_name || 'N/A'}</td>
+                            <td>${o.order_name}</td>
+                            <td>${o.totalPrice} грн</td>
+                            <td><div class="flex items-center"><span class="h-2 w-2 rounded-full mr-2 ${statusColor}"></span>${o.status}</div></td>
+                            <td><button class="delete-order-btn text-red-500 hover:text-red-300"><i class="fas fa-trash"></i></button></td>
+                        </tr>`;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+                
+                tableBody.querySelectorAll('.delete-order-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const id = e.currentTarget.closest('tr').dataset.id;
+                        if (confirm('Видалити це замовлення?')) {
+                            const result = await deleteData(`/orders/${id}`);
+                            if(result) {
+                                showNotification(result.message);
+                                loadOrders();
+                                loadDashboardStats();
+                            }
+                        }
+                    });
+                });
+            };
+            
+            // --- REVIEWS ---
+            const loadReviews = async () => {
+                 const reviews = await fetchData('/admin/reviews');
+                 renderReviews(reviews);
+            };
+
+            const renderReviews = (reviews) => {
+                const tableBody = document.getElementById('reviews-table');
+                tableBody.innerHTML = '';
+                 if (!reviews || reviews.length === 0) return;
+
+                reviews.forEach(r => {
+                    const statusBadge = r.approved
+                        ? '<span class="px-2 py-1 text-xs font-semibold text-green-800 bg-green-200 rounded-full">Схвалено</span>'
+                        : '<span class="px-2 py-1 text-xs font-semibold text-yellow-800 bg-yellow-200 rounded-full">Очікує</span>';
+        
+                    const row = `
+                        <tr data-id="${r.id}">
+                            <td>${r.product_name || 'Невідомий товар'}</td>
+                            <td>${r.username || 'Анонім'}</td>
+                            <td>${'⭐'.repeat(r.rating)}</td>
+                            <td class="text-sm text-gray-400">${r.comment}</td>
+                            <td>${statusBadge}</td>
+                            <td class="space-x-2">
+                                ${!r.approved ? `<button class="approve-btn text-green-400 hover:text-green-200" title="Схвалити"><i class="fas fa-check-circle"></i></button>` : `<button class="unapprove-btn text-yellow-400 hover:text-yellow-200" title="Зняти схвалення"><i class="fas fa-times-circle"></i></button>`}
+                                <button class="delete-review-btn text-red-500 hover:text-red-300" title="Видалити"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+                
+                document.querySelectorAll('.approve-btn, .unapprove-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const id = e.currentTarget.closest('tr').dataset.id;
+                        const approved = e.currentTarget.classList.contains('approve-btn');
+                        const result = await postData(`/admin/reviews/${id}`, { approved }, 'PUT');
+                        if(result) {
+                            showNotification(`Відгук ${approved ? 'схвалено' : 'знято зі схвалення'}`);
+                            loadReviews();
+                        }
+                    });
+                });
+                
+                document.querySelectorAll('.delete-review-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const id = e.currentTarget.closest('tr').dataset.id;
+                          if (confirm('Видалити цей відгук?')) {
+                              const result = await deleteData(`/admin/reviews/${id}`);
+                              if(result) {
+                                  showNotification(result.message);
+                                  loadReviews();
+                              }
+                          }
+                    });
+                });
+            };
+
+            // --- MARKETING ---
+            // Discounts
+            const loadDiscounts = async () => {
+                populateSpecificProductsSelect();
+                const discounts = await fetchData('/discounts') || [];
+                renderDiscounts(discounts);
+            };
+
+            document.getElementById('addDiscountForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const percentage = parseInt(document.getElementById('discountPercentage').value);
+                const target = document.getElementById('discountTarget').value;
+                const product_ids = target === 'specific' 
+                    ? Array.from(document.getElementById('specificProducts').selectedOptions).map(opt => opt.value)
+                    : [];
+                    
+                const discountData = { percentage, target, product_ids };
+                const result = await postData('/discounts', discountData);
+                if(result) {
+                    showNotification('Акцію успішно додано!');
+                    e.target.reset();
+                    document.getElementById('specific-products-container').classList.add('hidden');
+                    loadDiscounts();
+                }
+            });
+        
+            const renderDiscounts = (discounts) => {
+                const tableBody = document.getElementById('discounts-table');
+                tableBody.innerHTML = '';
+                discounts.forEach(d => {
+                    const description = d.target === 'all' 
+                        ? 'На всі товари'
+                        : `На ${d.product_ids.length} обраних товарів`;
+                    const row = `
+                        <tr data-id="${d.id}">
+                            <td>${description}</td>
+                            <td>${d.percentage}%</td>
+                            <td>
+                                <button class="delete-discount-btn text-red-500 hover:text-red-300"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+                
+                document.querySelectorAll('.delete-discount-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const id = e.currentTarget.closest('tr').dataset.id;
+                        if(confirm('Видалити цю акцію?')) {
+                            const result = await deleteData(`/discounts/${id}`);
+                            if(result) {
+                                showNotification(result.message);
+                                loadDiscounts();
+                            }
+                        }
+                    });
+                });
+            };
+
+             document.getElementById('discountTarget').addEventListener('change', (e) => {
+                document.getElementById('specific-products-container').classList.toggle('hidden', e.target.value !== 'specific');
+             });
+
+            const populateSpecificProductsSelect = () => {
+                const select = document.getElementById('specificProducts');
+                select.innerHTML = '';
+                allProducts.forEach(p => {
+                    select.innerHTML += `<option value="${p.id}">${p.name}</option>`;
+                });
+            };
+
+            // Promocodes
+            const loadPromocodes = async () => {
+                 const promocodes = await fetchData('/promocodes') || [];
+                 renderPromocodes(promocodes);
+            };
+            
+            const renderPromocodes = (promocodes) => {
+                 const tableBody = document.getElementById('promocodes-table');
+                 tableBody.innerHTML = '';
+                 promocodes.forEach(p => {
+                     const row = `
+                        <tr data-code="${p.code}">
+                             <td>${p.code}</td>
+                             <td>${p.discount_percentage}%</td>
+                             <td>${p.uses_left}</td>
+                             <td><button class="delete-promocode-btn text-red-500 hover:text-red-300"><i class="fas fa-trash"></i></button></td>
+                        </tr>`;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                 });
+                 
+                 document.querySelectorAll('.delete-promocode-btn').forEach(btn => {
+                     btn.addEventListener('click', async (e) => {
+                         const code = e.currentTarget.closest('tr').dataset.code;
+                         if (confirm(`Видалити промокод ${code}?`)) {
+                             const result = await deleteData(`/promocodes/${code}`);
+                             if (result) {
+                                showNotification(result.message);
+                                loadPromocodes();
+                             }
+                         }
+                     });
+                 });
+            };
+
+            document.getElementById('addPromocodeForm').addEventListener('submit', async(e) => {
+                e.preventDefault();
+                const data = {
+                    code: document.getElementById('promocodeCode').value.toUpperCase(),
+                    discount_percentage: parseInt(document.getElementById('promocodePercentage').value),
+                    total_uses: parseInt(document.getElementById('promocodeUses').value),
+                };
+                const result = await postData('/promocodes', data);
+                if (result) {
+                    showNotification('Промокод створено!');
+                    e.target.reset();
+                    loadPromocodes();
+                }
+            });
+
+            // Bonus Program
+            const loadBonusSettings = async () => {
+                const settings = await fetchData('/admin/bonus-settings');
+                if (settings) {
+                    document.getElementById('referralBonus').value = settings.referral_bonus || 0;
+                    document.getElementById('purchaseBonus').value = settings.purchase_bonus_percentage || 0;
+                }
+            };
+
+            document.getElementById('bonusSettingsForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const data = {
+                    referral_bonus: parseInt(document.getElementById('referralBonus').value),
+                    purchase_bonus_percentage: parseInt(document.getElementById('purchaseBonus').value)
+                };
+                const result = await postData('/admin/bonus-settings', data, 'PUT');
+                if (result) {
+                    showNotification('Налаштування бонусів збережено!');
+                }
+            });
+
+            // --- CLIENTS & CRM ---
+            const loadClients = async () => {
+                const clients = await fetchData('/admin/clients');
+                renderClients(clients);
+            };
+        
+            const renderClients = (clients) => {
+                const tableBody = document.getElementById('clients-table');
+                tableBody.innerHTML = '';
+                if (!clients || clients.length === 0) return;
+
+                clients.forEach(client => {
+                    const statusBadge = client.is_banned
+                        ? '<span class="px-2 py-1 text-xs font-semibold text-red-800 bg-red-200 rounded-full">Заблоковано</span>'
+                        : '<span class="px-2 py-1 text-xs font-semibold text-green-800 bg-green-200 rounded-full">Активний</span>';
+                    const banButton = client.is_banned
+                        ? `<button class="unban-client-btn text-green-400 hover:text-green-200" title="Розблокувати"><i class="fas fa-unlock"></i></button>`
+                        : `<button class="ban-client-btn text-red-500 hover:text-red-300" title="Заблокувати"><i class="fas fa-ban"></i></button>`;
+        
+                    const row = `
+                        <tr data-id="${client.user_id}">
+                            <td class="text-xs text-gray-500">${client.user_id}</td>
+                            <td>${client.name || ''} ${client.surname || ''}</td>
+                            <td>${client.phone || 'N/A'}</td>
+                            <td>${client.loyalty_points || 0}</td>
+                            <td>${statusBadge}</td>
+                            <td class="space-x-2">
+                                <button class="details-client-btn text-cyan-400 hover:text-cyan-200" title="Деталі"><i class="fas fa-eye"></i></button>
+                                ${banButton}
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+        
+                document.querySelectorAll('.ban-client-btn, .unban-client-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const id = e.currentTarget.closest('tr').dataset.id;
+                        const ban = e.currentTarget.classList.contains('ban-client-btn');
+                        if (confirm(`Ви впевнені, що хочете ${ban ? 'заблокувати' : 'розблокувати'} цього клієнта?`)) {
+                            const result = await postData(`/admin/clients/${id}/ban`, { ban }, 'POST');
+                            if (result) {
+                                showNotification(`Клієнта ${ban ? 'заблоковано' : 'розблоковано'}`);
+                                loadClients();
+                            }
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.details-client-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const id = e.currentTarget.closest('tr').dataset.id;
+                        openClientDetailsModal(id);
+                    });
+                });
+            };
+
+            const openClientDetailsModal = async (clientId) => {
+                const data = await fetchData(`/admin/clients/${clientId}/details`);
+                if (!data) return;
+
+                document.getElementById('clientModalTitle').textContent = `Картка Клієнта: ${data.client.name}`;
+                document.getElementById('client-details-id').textContent = data.client.user_id;
+                document.getElementById('client-details-phone').textContent = data.client.phone || 'Не вказано';
+                document.getElementById('client-details-ltv').textContent = `${data.ltv} грн`;
+                document.getElementById('client-details-balance').textContent = `${data.client.loyalty_points} Delon-гіків`;
+                document.getElementById('client-note-id').value = clientId;
+
+                const ordersHistory = document.getElementById('client-orders-history');
+                ordersHistory.innerHTML = '';
+                if (data.orders.length > 0) {
+                    data.orders.forEach(order => {
+                        ordersHistory.innerHTML += `<div class="text-sm p-1 bg-gray-800 rounded"><span>${new Date(order.date).toLocaleDateString()}</span> - <b>${order.order_name}</b> (${order.totalPrice} грн)</div>`;
+                    });
+                } else {
+                    ordersHistory.innerHTML = '<p class="text-gray-500">Замовлень немає.</p>';
+                }
+
+                const notesHistory = document.getElementById('client-notes-history');
+                notesHistory.innerHTML = '';
+                if (data.client.notes && data.client.notes.length > 0) {
+                    data.client.notes.forEach(note => {
+                        notesHistory.innerHTML += `<div class="text-sm p-1 bg-gray-800 rounded"><span>${new Date(note.date).toLocaleString()}</span>: ${note.text}</div>`;
+                    });
+                } else {
+                    notesHistory.innerHTML = '<p class="text-gray-500">Нотаток немає.</p>';
+                }
+                
+                openModal('clientDetailsModal');
+            };
+
+            document.getElementById('addClientNoteForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const clientId = document.getElementById('client-note-id').value;
+                const noteText = document.getElementById('client-note-input').value;
+                if (!noteText.trim()) return;
+
+                const result = await postData(`/admin/clients/${clientId}/notes`, { text: noteText });
+                if (result) {
+                    showNotification('Нотатку додано');
+                    document.getElementById('client-note-input').value = '';
+                    // Refresh notes in modal
+                    const notesHistory = document.getElementById('client-notes-history');
+                    notesHistory.innerHTML = '';
+                     if (result.notes && result.notes.length > 0) {
+                        result.notes.forEach(note => {
+                            notesHistory.innerHTML += `<div class="text-sm p-1 bg-gray-800 rounded"><span>${new Date(note.date).toLocaleString()}</span>: ${note.text}</div>`;
+                        });
+                    }
+                }
+            });
+        
+            // --- NEWS & BROADCAST ---
+            const uploadFile = async (file) => {
+                const formData = new FormData();
+                formData.append('file', file);
+                showLoader();
+                try {
+                    const response = await fetch(`${API_BASE}/upload`, { method: 'POST', body: formData });
+                    const result = await response.json();
+                    if (!response.ok) throw new Error(result.message);
+                    showNotification('Файл успішно завантажено!');
+                    return result;
+                } catch (error) {
+                    showNotification(`Помилка завантаження файлу: ${error.message}`, true);
+                    return null;
+                } finally {
+                    hideLoader();
+                }
+            };
+        
+            const setupFileUpload = (inputId, previewId) => {
+                const fileInput = document.getElementById(inputId);
+                const filePreview = document.getElementById(previewId);
+        
+                fileInput.addEventListener('change', () => {
+                    if (fileInput.files.length > 0) {
+                        const file = fileInput.files[0];
+                        filePreview.innerHTML = `
+                            <span class="bg-gray-700 px-2 py-1 rounded-md">${file.name}</span>
+                            <button type="button" class="remove-file-btn text-red-500 ml-2">&times;</button>
+                        `;
+                        filePreview.querySelector('.remove-file-btn').addEventListener('click', () => {
+                            fileInput.value = '';
+                            filePreview.innerHTML = '';
+                        });
+                    } else {
+                        filePreview.innerHTML = '';
+                    }
+                });
+            };
+        
+            const wrapText = (textareaId, tag) => {
+                const textarea = document.getElementById(textareaId);
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                const selectedText = textarea.value.substring(start, end);
+                let replacement;
+        
+                if (tag === 'a') {
+                    const url = prompt('Введіть URL посилання:', 'https://');
+                    if (!url) return;
+                    replacement = `<a href="${url}">${selectedText || 'текст посилання'}</a>`;
+                } else {
+                    replacement = `<${tag}>${selectedText}</${tag}>`;
+                }
+                
+                textarea.value = textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
+            };
+        
+            document.querySelectorAll('.format-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const targetId = e.currentTarget.dataset.target;
+                    const tag = e.currentTarget.dataset.tag;
+                    wrapText(targetId, tag);
+                });
+            });
+        
+            setupFileUpload('newsFile', 'newsFilePreview');
+            setupFileUpload('broadcastFile', 'broadcastFilePreview');
+        
+            const loadNews = async () => {
+                const news = await fetchData('/news');
+                renderNews(news);
+            };
+        
+            const renderNews = (news) => {
+                const tableBody = document.getElementById('news-table');
+                tableBody.innerHTML = '';
+                if (!news || news.length === 0) return;
+                news.sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).forEach(item => {
+                    let attachmentIcon = '<span class="text-gray-500">-</span>';
+                    if (item.photo_id) {
+                        attachmentIcon = '<i class="fas fa-image text-blue-400" title="Фото"></i>';
+                    } else if (item.document_id) {
+                        attachmentIcon = '<i class="fas fa-file-alt text-purple-400" title="Документ"></i>';
+                    }
+        
+                    const row = `
+                        <tr data-id="${item.id}">
+                            <td class="text-sm text-gray-300">${item.text}</td>
+                            <td class="text-center">${attachmentIcon}</td>
+                            <td>${new Date(item.created_at).toLocaleString('uk-UA')}</td>
+                            <td class="space-x-2">
+                                <button class="edit-news-btn text-cyan-400 hover:text-cyan-200"><i class="fas fa-edit"></i></button>
+                                <button class="delete-news-btn text-red-500 hover:text-red-300"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+        
+                document.querySelectorAll('.edit-news-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const id = e.currentTarget.closest('tr').dataset.id;
+                        const newsItem = await fetchData(`/news/${id}`);
+                        if(newsItem) openNewsModal(newsItem);
+                    });
+                });
+        
+                document.querySelectorAll('.delete-news-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const id = e.currentTarget.closest('tr').dataset.id;
+                        if (confirm('Видалити цю новину?')) {
+                            const result = await deleteData(`/news/${id}`);
+                            if (result) {
+                                showNotification(result.message);
+                                loadNews();
+                            }
+                        }
+                    });
+                });
+            };
+
+            const openNewsModal = (newsItem = null) => {
+                document.getElementById('newsForm').reset();
+                document.getElementById('newsFilePreview').innerHTML = '';
+                if (newsItem) {
+                    document.getElementById('newsModalTitle').textContent = 'Редагувати новину';
+                    document.getElementById('newsId').value = newsItem.id;
+                    document.getElementById('newsContent').value = newsItem.text;
+                } else {
+                    document.getElementById('newsModalTitle').textContent = 'Створити новину';
+                    document.getElementById('newsId').value = '';
+                }
+                openModal('newsModal');
+            };
+        
+            document.getElementById('addNewsBtn').addEventListener('click', () => openNewsModal());
+        
+            document.getElementById('newsForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const id = document.getElementById('newsId').value;
+                const data = { text: document.getElementById('newsContent').value };
+                
+                const fileInput = document.getElementById('newsFile');
+                if (fileInput.files.length > 0) {
+                    const fileData = await uploadFile(fileInput.files[0]);
+                    if (!fileData) return;
+                    if (fileData.file_type === 'photo') data.photo_id = fileData.file_id;
+                    if (fileData.file_type === 'document') data.document_id = fileData.file_id;
+                }
+        
+                const result = await postData(id ? `/news/${id}` : '/news', data, id ? 'PUT' : 'POST');
+                if (result) {
+                    showNotification(`Новину успішно ${id ? 'оновлено' : 'додано'}`);
+                    closeModal(document.getElementById('newsModal'));
+                    loadNews();
+                }
+            });
+        
+            document.getElementById('broadcastForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const data = { message: document.getElementById('broadcastMessage').value };
+                const fileInput = document.getElementById('broadcastFile');
+        
+                if (!data.message.trim() && fileInput.files.length === 0) {
+                     showNotification('Повідомлення або файл не можуть бути порожніми', true);
+                     return;
+                }
+        
+                if (fileInput.files.length > 0) {
+                    const fileData = await uploadFile(fileInput.files[0]);
+                    if (!fileData) return;
+                    if (fileData.file_type === 'photo') data.photo_id = fileData.file_id;
+                    if (fileData.file_type === 'document') data.document_id = fileData.file_id;
+                }
+        
+                if (confirm('Ви впевнені, що хочете надіслати це повідомлення усім користувачам?')) {
+                    showLoader();
+                    const result = await postData('/admin/broadcast', data);
+                    hideLoader();
+                    if (result) {
+                        showNotification(result.message);
+                        e.target.reset();
+                        document.getElementById('broadcastFilePreview').innerHTML = '';
+                    }
+                }
+            });
+        
+            // --- ANALYTICS ---
+            const loadAnalytics = async () => {
+                const analyticsData = await fetchData('/admin/analytics');
+                if (!analyticsData) return;
+        
+                document.getElementById('average-check').textContent = `${analyticsData.kpi.average_check || 0} грн`;
+                document.getElementById('review-stats').innerHTML = `
+                    <span class="text-green-400">${analyticsData.kpi.review_stats.approved}</span> / 
+                    <span>${analyticsData.kpi.review_stats.total}</span>`;
+        
+                const topProductsTable = document.getElementById('top-products-table');
+                topProductsTable.innerHTML = '';
+                analyticsData.top_products.forEach(p => {
+                    topProductsTable.innerHTML += `<tr><td>${p.name}</td><td>${p.sales}</td></tr>`;
+                });
+        
+                const chartOptions = {
+                     responsive: true,
+                     scales: {
+                         y: { beginAtZero: true, ticks: { color: 'var(--text-secondary)' }, grid: { color: 'var(--border-color)' } },
+                         x: { ticks: { color: 'var(--text-secondary)' }, grid: { color: 'var(--border-color)' } }
+                     },
+                     plugins: { legend: { labels: { color: 'var(--text-primary)' } } }
+                };
+
+                // Revenue Chart
+                const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+                if (revenueChartInstance) revenueChartInstance.destroy();
+                revenueChartInstance = new Chart(revenueCtx, {
+                    type: 'line',
+                    data: {
+                        labels: analyticsData.revenue_chart.labels,
+                        datasets: [{
+                            label: 'Дохід, грн',
+                            data: analyticsData.revenue_chart.data,
+                            backgroundColor: 'rgba(57, 211, 211, 0.2)',
+                            borderColor: 'rgba(57, 211, 211, 1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true,
+                        }]
+                    },
+                    options: chartOptions
+                });
+                
+                // Registrations Chart
+                const regCtx = document.getElementById('registrationsChart').getContext('2d');
+                if (registrationsChartInstance) registrationsChartInstance.destroy();
+                registrationsChartInstance = new Chart(regCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: analyticsData.registrations_chart.labels,
+                        datasets: [{
+                            label: 'Нові користувачі',
+                            data: analyticsData.registrations_chart.data,
+                            backgroundColor: 'rgba(57, 211, 211, 0.5)',
+                            borderColor: 'rgba(57, 211, 211, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: chartOptions
+                });
+            };
+            
+            // --- FINANCES ---
+            const loadTransactions = async () => {
+                const transactions = await fetchData('/finances/transactions') || [];
+                const tableBody = document.getElementById('transactions-table');
+                tableBody.innerHTML = '';
+                transactions.forEach(t => {
+                    tableBody.innerHTML += `<tr>
+                        <td>${new Date(t.date).toLocaleString('uk-UA')}</td>
+                        <td>${t.order_id.substring(0,8)}...</td>
+                        <td class="text-green-400">+${t.amount} грн</td>
+                    </tr>`;
+                });
+            };
+
+            const loadPaymentMethods = async () => {
+                const methods = await fetchData('/finances/payment-methods') || [];
+                const container = document.getElementById('paymentMethodsContainer');
+                container.innerHTML = '';
+                if (methods.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500">Способи оплати не додано.</p>';
+                    return;
+                }
+                methods.forEach(method => {
+                    const methodCard = `
+                        <div class="bg-bg-dark p-4 rounded-lg border border-border-color">
+                            <div class="flex justify-between items-center">
+                                <h4 class="font-bold text-lg">${method.account_name}</h4>
+                                <div class="space-x-2">
+                                    <button class="edit-payment-btn text-cyan-400" data-id="${method.id}"><i class="fas fa-edit"></i></button>
+                                    <button class="delete-payment-btn text-red-500" data-id="${method.id}"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                            ${method.account_number ? `<p class="text-sm text-gray-400 font-mono">${method.account_number}</p>` : ''}
+                            ${method.payment_link ? `<p class="text-sm text-gray-400">Посилання: ${method.payment_link}</p>` : ''}
+                        </div>
+                    `;
+                    container.insertAdjacentHTML('beforeend', methodCard);
+                });
+
+                document.querySelectorAll('.edit-payment-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const id = e.currentTarget.dataset.id;
+                        const method = (await fetchData('/finances/payment-methods')).find(m => m.id === id);
+                        if(method) openPaymentModal(method);
+                    });
+                });
+                document.querySelectorAll('.delete-payment-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const id = e.currentTarget.dataset.id;
+                        if(confirm('Видалити цей спосіб оплати?')) {
+                            const result = await deleteData(`/finances/payment-methods/${id}`);
+                            if(result) {
+                                showNotification(result.message);
+                                loadPaymentMethods();
+                            }
+                        }
+                    });
+                });
+            };
+
+            const openPaymentModal = (method = null) => {
+                document.getElementById('paymentMethodForm').reset();
+                if (method) {
+                    document.getElementById('paymentModalTitle').textContent = 'Редагувати спосіб оплати';
+                    document.getElementById('paymentMethodId').value = method.id;
+                    document.getElementById('paymentAccountName').value = method.account_name;
+                    document.getElementById('paymentAccountNumber').value = method.account_number || '';
+                    document.getElementById('paymentLink').value = method.payment_link || '';
+                    document.getElementById('paymentInstructions').value = method.instructions || '';
+                } else {
+                    document.getElementById('paymentModalTitle').textContent = 'Додати спосіб оплати';
+                    document.getElementById('paymentMethodId').value = '';
+                }
+                openModal('paymentMethodModal');
+            };
+            
+            document.getElementById('addPaymentMethodBtn').addEventListener('click', () => openPaymentModal());
+
+            document.getElementById('paymentMethodForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const id = document.getElementById('paymentMethodId').value;
+                const data = {
+                    account_name: document.getElementById('paymentAccountName').value,
+                    account_number: document.getElementById('paymentAccountNumber').value,
+                    payment_link: document.getElementById('paymentLink').value,
+                    instructions: document.getElementById('paymentInstructions').value
+                };
+                const result = await postData(id ? `/finances/payment-methods/${id}` : '/finances/payment-methods', data, id ? 'PUT' : 'POST');
+                if (result) {
+                    showNotification(`Спосіб оплати ${id ? 'оновлено' : 'додано'}`);
+                    closeModal(document.getElementById('paymentMethodModal'));
+                    loadPaymentMethods();
+                }
+            });
+
+
+            // --- SETTINGS ---
+            const loadShopInfo = async () => {
+                const info = await fetchData('/shop-info');
+                if(info) {
+                    document.getElementById('shopName').textContent = info.name;
+                    document.getElementById('shopNameInput').value = info.name;
+                    document.getElementById('shopDescriptionInput').value = info.description;
+                }
+            };
+            
+            document.getElementById('shopInfoForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const data = {
+                    name: document.getElementById('shopNameInput').value,
+                    description: document.getElementById('shopDescriptionInput').value
+                };
+                const result = await postData('/shop-info', data, 'PUT');
+                if(result) {
+                    showNotification('Інформацію про магазин оновлено!');
+                    loadShopInfo();
+                }
+            });
+        
+            const renderKnowledgeBase = (kb) => {
+                const tableBody = document.getElementById('chatbot-knowledge-table');
+                tableBody.innerHTML = '';
+                if(!kb || kb.length === 0) return;
+                kb.forEach(item => {
+                    const keywords = Array.isArray(item.keywords) ? item.keywords.join(', ') : item.keywords;
+                    const row = `
+                        <tr data-id="${item.id}" class="border-b border-gray-700">
+                            <td class="py-2">
+                                <p class="font-semibold text-cyan-400">${keywords}</p>
+                                <p class="text-sm text-gray-400"> -> ${item.response}</p>
+                            </td>
+                            <td class="text-right">
+                                <button class="delete-kb-btn text-red-500 hover:text-red-300"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+                
+                document.querySelectorAll('.delete-kb-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const id = e.currentTarget.closest('tr').dataset.id;
+                        const result = await deleteData(`/chatbot-knowledge/${id}`);
+                        if(result) {
+                            showNotification(result.message);
+                            loadChatbotKnowledge();
+                        }
+                    });
+                });
+            };
+            const loadChatbotKnowledge = async () => renderKnowledgeBase(await fetchData('/chatbot-knowledge'));
+            
+            document.getElementById('addKnowledgeForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const keywords = document.getElementById('chatbotKeywords').value.split(',').map(k => k.trim());
+                const data = {
+                    keywords: keywords,
+                    response: document.getElementById('chatbotResponse').value
+                };
+                const result = await postData('/chatbot-knowledge', data);
+                if(result) {
+                    showNotification(result.message);
+                    e.target.reset();
+                    loadChatbotKnowledge();
+                }
+            });
+
+            // --- Notifications ---
+            const bell = document.getElementById('notification-bell');
+            const dropdown = document.getElementById('notification-dropdown');
+            const badge = document.getElementById('notification-badge');
+            const notificationList = document.getElementById('notification-list');
+
+            bell.addEventListener('click', () => {
+                dropdown.classList.toggle('hidden');
+                badge.classList.add('hidden');
+                badge.textContent = '';
+            });
+
+            const fetchNotifications = async () => {
+                const logs = await fetchData('/settings/logs') || [];
+                notificationList.innerHTML = '';
+                if (logs.length === 0) {
+                    notificationList.innerHTML = '<p class="text-gray-500 text-sm px-4 py-2">Немає сповіщень</p>';
+                    return;
+                }
+                logs.slice(0, 10).forEach(log => {
+                    notificationList.innerHTML += `
+                        <div class="px-4 py-2 border-b border-border-color">
+                            <p class="text-sm font-semibold">${log.action}</p>
+                            <p class="text-xs text-gray-400">${log.details}</p>
+                            <p class="text-xs text-gray-500 text-right">${new Date(log.timestamp).toLocaleString()}</p>
+                        </div>`;
+                });
+            };
+
+            // --- NEW FEATURES JAVASCRIPT ---
+
+            // Support Tickets
+            const loadSupportTickets = async () => {
+                const tickets = await fetchData('/support-tickets') || [];
+                renderSupportTickets(tickets);
+            };
+
+            const renderSupportTickets = (tickets) => {
+                const tableBody = document.getElementById('tickets-table');
+                tableBody.innerHTML = '';
+                tickets.forEach(ticket => {
+                    const statusMap = {
+                        'new': { text: 'Новий', color: 'text-cyan-400' },
+                        'in_progress': { text: 'В роботі', color: 'text-yellow-400' },
+                        'closed': { text: 'Закритий', color: 'text-gray-500' }
+                    };
+                    const status = statusMap[ticket.status] || { text: ticket.status, color: '' };
+                    const row = `
+                        <tr data-id="${ticket.id}">
+                            <td class="font-mono text-xs">${ticket.id}</td>
+                            <td>${ticket.client_name} (${ticket.client_id})</td>
+                            <td>${ticket.subject}</td>
+                            <td class="${status.color}">${status.text}</td>
+                            <td>${new Date(ticket.last_updated).toLocaleString()}</td>
+                            <td><button class="view-ticket-btn text-cyan-400"><i class="fas fa-eye"></i></button></td>
+                        </tr>
+                    `;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+
+                document.querySelectorAll('.view-ticket-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const id = e.currentTarget.closest('tr').dataset.id;
+                        openTicketModal(id);
+                    });
+                });
+            };
+
+            const openTicketModal = async (ticketId) => {
+                const ticket = await fetchData(`/support-tickets/${ticketId}`);
+                if (!ticket) return;
+
+                document.getElementById('ticket-modal-id').textContent = ticket.id;
+                document.getElementById('ticket-reply-id').value = ticket.id;
+                document.getElementById('ticket-status-select').value = ticket.status;
+                
+                const conversationDiv = document.getElementById('ticket-conversation');
+                conversationDiv.innerHTML = '';
+                ticket.messages.forEach(msg => {
+                    const alignClass = msg.sender === 'client' ? 'text-left' : 'text-right';
+                    const bubbleClass = msg.sender === 'client' ? 'bg-gray-700' : 'bg-cyan-900/50';
+                    conversationDiv.innerHTML += `
+                        <div class="${alignClass}">
+                            <div class="inline-block p-2 rounded-lg ${bubbleClass}">
+                                <p>${msg.text}</p>
+                                <p class="text-xs text-gray-400 mt-1">${new Date(msg.timestamp).toLocaleString()}</p>
+                            </div>
+                        </div>`;
+                });
+                openModal('ticketDetailsModal');
+            };
+
+            document.getElementById('ticketReplyForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const ticketId = document.getElementById('ticket-reply-id').value;
+                const message = document.getElementById('ticket-reply-message').value;
+                const status = document.getElementById('ticket-status-select').value;
+
+                const result = await postData(`/support-tickets/${ticketId}/reply`, { message, status });
+                if (result) {
+                    showNotification('Відповідь надіслано');
+                    closeModal(document.getElementById('ticketDetailsModal'));
+                    loadSupportTickets();
+                }
+            });
+
+            // User Management
+            const loadUsers = async () => {
+                const users = await fetchData('/users') || [];
+                renderUsers(users);
+            };
+
+            const renderUsers = (users) => {
+                const tableBody = document.getElementById('users-table');
+                tableBody.innerHTML = '';
+                users.forEach(user => {
+                    const row = `
+                        <tr data-id="${user.id}">
+                            <td>${user.login}</td>
+                            <td>${user.role}</td>
+                            <td>${new Date(user.created_at).toLocaleDateString()}</td>
+                            <td><button class="delete-user-btn text-red-500"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                    `;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+
+                document.querySelectorAll('.delete-user-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const id = e.currentTarget.closest('tr').dataset.id;
+                        if (confirm('Видалити цього користувача?')) {
+                            const result = await deleteData(`/users/${id}`);
+                            if (result) {
+                                showNotification(result.message);
+                                loadUsers();
+                            }
+                        }
+                    });
+                });
+            };
+            
+            document.getElementById('addUserBtn').addEventListener('click', () => openModal('addUserModal'));
+
+            document.getElementById('addUserForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const data = {
+                    login: document.getElementById('new-user-login').value,
+                    password: document.getElementById('new-user-password').value,
+                    role: document.getElementById('new-user-role').value
+                };
+                const result = await postData('/users', data);
+                if (result) {
+                    showNotification('Користувача додано');
+                    closeModal(document.getElementById('addUserModal'));
+                    e.target.reset();
+                    loadUsers();
+                }
+            });
+
+
+            // Backup & Restore
+            const loadBackups = async () => {
+                const backups = await fetchData('/settings/backups') || [];
+                const listDiv = document.getElementById('backups-list');
+                listDiv.innerHTML = '';
+                if (backups.length > 0) {
+                    backups.forEach(file => {
+                        listDiv.innerHTML += `<div class="flex justify-between items-center bg-gray-900 p-2 rounded">
+                            <span>${file}</span>
+                            <a href="${API_BASE}/settings/backups/${file}" class="text-cyan-400" download><i class="fas fa-download"></i></a>
+                        </div>`;
+                    });
+                } else {
+                    listDiv.innerHTML = '<p class="text-gray-500">Резервних копій не знайдено.</p>';
+                }
+            };
+            
+            document.getElementById('createBackupBtn').addEventListener('click', async () => {
+                showLoader();
+                const result = await postData('/settings/backup', {});
+                hideLoader();
+                if (result) {
+                    showNotification(result.message);
+                    loadBackups();
+                }
+            });
+
+            // System Log
+            const loadSystemLogs = async () => {
+                const logs = await fetchData('/settings/logs') || [];
+                const listDiv = document.getElementById('system-log-list');
+                listDiv.innerHTML = '';
+                logs.forEach(log => {
+                    listDiv.innerHTML += `<div class="p-1">
+                        <span class="text-gray-500">${new Date(log.timestamp).toLocaleString()}</span> - 
+                        <span class="font-semibold text-cyan-400">${log.action}</span>:
+                        <span class="text-gray-300">${log.details}</span>
+                    </div>`;
+                });
+            };
+
+            // --- FILE MANAGER ---
+            const renderFM = (items) => {
+                const fileListDiv = document.getElementById('fm-file-list');
+                fileListDiv.innerHTML = '';
+                items.forEach(item => {
+                    const isDir = item.type === 'directory';
+                    const icon = isDir ? 'fa-folder' : 'fa-file-alt';
+                    const color = isDir ? 'text-yellow-400' : 'text-gray-300';
+                    const itemEl = document.createElement('div');
+                    itemEl.className = 'text-center p-2 rounded-lg hover:bg-border-color cursor-pointer';
+                    itemEl.dataset.path = item.path;
+                    itemEl.dataset.type = item.type;
+                    itemEl.innerHTML = `
+                        <i class="fas ${icon} ${color} text-4xl mb-2"></i>
+                        <p class="text-xs break-words">${item.name}</p>
+                    `;
+                    itemEl.addEventListener('click', () => {
+                        if (isDir) {
+                            navigateFM(item.path);
+                        } else {
+                            openFileEditor(item.path);
+                        }
+                    });
+                    fileListDiv.appendChild(itemEl);
+                });
+            };
+
+            const renderFMBreadcrumbs = (path) => {
+                const breadcrumbsDiv = document.getElementById('fm-breadcrumbs');
+                breadcrumbsDiv.innerHTML = '';
+                const parts = path.split('/').filter(p => p);
+                let currentPath = '';
+                
+                const rootLink = document.createElement('a');
+                rootLink.href = '#';
+                rootLink.className = 'hover:text-cyan-400';
+                rootLink.textContent = 'Головна';
+                rootLink.onclick = (e) => { e.preventDefault(); navigateFM(''); };
+                breadcrumbsDiv.appendChild(rootLink);
+
+                parts.forEach(part => {
+                    currentPath += (currentPath ? '/' : '') + part;
+                    const separator = document.createElement('span');
+                    separator.className = 'mx-2';
+                    separator.textContent = '/';
+                    breadcrumbsDiv.appendChild(separator);
+
+                    const partLink = document.createElement('a');
+                    partLink.href = '#';
+                    partLink.className = 'hover:text-cyan-400';
+                    partLink.textContent = part;
+                    partLink.dataset.path = currentPath;
+                    partLink.onclick = (e) => { e.preventDefault(); navigateFM(e.target.dataset.path); };
+                    breadcrumbsDiv.appendChild(partLink);
+                });
+            };
+
+            const navigateFM = async (path) => {
+                currentFMPath = path;
+                const items = await fetchData(`/files?path=${encodeURIComponent(path)}`);
+                if (items) {
+                    renderFM(items);
+                    renderFMBreadcrumbs(path);
+                }
+            };
+
+            const openFileEditor = async (path) => {
+                const result = await fetchData(`/file-content?path=${encodeURIComponent(path)}`);
+                if (result) {
+                    document.getElementById('fm-editor-filename').textContent = path;
+                    document.getElementById('fm-editor-content').value = result.content;
+                    document.getElementById('fm-save-file-btn').dataset.path = path;
+                    openModal('fileEditorModal');
+                }
+            };
+            
+            document.getElementById('fm-save-file-btn').addEventListener('click', async (e) => {
+                const path = e.currentTarget.dataset.path;
+                const content = document.getElementById('fm-editor-content').value;
+                const result = await postData('/file-content', { path, content });
+                if (result) {
+                    showNotification(result.message);
+                    closeModal(document.getElementById('fileEditorModal'));
+                }
+            });
+
+            document.getElementById('fm-up-btn').addEventListener('click', () => {
+                if (currentFMPath) {
+                    const parentPath = currentFMPath.substring(0, currentFMPath.lastIndexOf('/'));
+                    navigateFM(parentPath);
+                }
+            });
+
+            document.getElementById('fm-create-file-btn').addEventListener('click', async () => {
+                const fileName = prompt('Введіть назву нового файлу (напр. config.json):');
+                if (fileName && fileName.trim()) {
+                    const path = currentFMPath ? `${currentFMPath}/${fileName}` : fileName;
+                    const result = await postData('/files', { path, type: 'file' });
+                    if (result) {
+                        showNotification(result.message);
+                        navigateFM(currentFMPath);
+                    }
+                }
+            });
+
+            document.getElementById('fm-create-folder-btn').addEventListener('click', async () => {
+                const folderName = prompt('Введіть назву нової папки:');
+                if (folderName && folderName.trim()) {
+                    const path = currentFMPath ? `${currentFMPath}/${folderName}` : folderName;
+                    const result = await postData('/files', { path, type: 'directory' });
+                    if (result) {
+                        showNotification(result.message);
+                        navigateFM(currentFMPath);
+                    }
+                }
+            });
+
+            // --- INITIALIZATION ---
+            const init = async () => {
+                showLoader();
+                await loadShopInfo();
+                await loadCategories();
+                await loadProducts();
+                loadDashboardStats();
+                fetchNotifications();
+                hideLoader();
+            };
+        
+            init();
+        });
+    </script>
+</body>
+</html>

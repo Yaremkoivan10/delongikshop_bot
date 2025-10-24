@@ -1,0 +1,352 @@
+[
+    {
+        "timestamp": "2025-09-01T23:12:46.311194",
+        "action": "File Edited",
+        "details": "File 'admin.html' was edited."
+    },
+    {
+        "timestamp": "2025-08-26T17:16:25.833693",
+        "action": "Payment Method Deleted",
+        "details": "Method 'Криптовалютою USDT TRC20' (криптовалютою_usdt(trc20)_622) was deleted."
+    },
+    {
+        "timestamp": "2025-08-26T17:16:16.931788",
+        "action": "Payment Method Updated",
+        "details": "Method 'Криптовалютою USDT TRC20' (криптовалютою_usdt(trc20)_622) was updated."
+    },
+    {
+        "timestamp": "2025-08-26T17:15:16.720060",
+        "action": "Payment Method Added",
+        "details": "Method 'Криптовалютою USDT(TRC20)' was added."
+    },
+    {
+        "timestamp": "2025-08-26T17:13:55.065033",
+        "action": "File Edited",
+        "details": "File 'pay.json' was edited."
+    },
+    {
+        "timestamp": "2025-08-26T17:13:24.398133",
+        "action": "Payment Method Updated",
+        "details": "Method 'MonoBank карта ' (mono_card) was updated."
+    },
+    {
+        "timestamp": "2025-08-26T17:13:13.755391",
+        "action": "File Edited",
+        "details": "File 'admin.html' was edited."
+    },
+    {
+        "timestamp": "2025-08-26T16:52:08.549020",
+        "action": "File Edited",
+        "details": "File 'app.py' was edited."
+    },
+    {
+        "timestamp": "2025-08-26T16:41:56.022010",
+        "action": "File Edited",
+        "details": "File 'app.py' was edited."
+    },
+    {
+        "timestamp": "2025-08-26T16:31:43.157715",
+        "action": "File Edited",
+        "details": "File 'app.py' was edited."
+    },
+    {
+        "timestamp": "2025-08-26T16:19:26.225877",
+        "action": "File Edited",
+        "details": "File 'app.py' was edited."
+    },
+    {
+        "timestamp": "2025-08-26T16:08:49.183240",
+        "action": "Payment Method Updated",
+        "details": "Method 'Посилання MonoBank (ГРН)' (mono_link) was updated."
+    },
+    {
+        "timestamp": "2025-08-26T16:08:36.479988",
+        "action": "Payment Method Updated",
+        "details": "Method 'PrivatBank карта (ГРН)' (privat_card) was updated."
+    },
+    {
+        "timestamp": "2025-08-26T16:08:29.159925",
+        "action": "Payment Method Updated",
+        "details": "Method 'MonoBank карта (ГРН)' (mono_card) was updated."
+    },
+    {
+        "timestamp": "2025-08-26T16:08:17.998466",
+        "action": "Payment Method Updated",
+        "details": "Method 'Криптовалютою USDT(TRC20)' (криптовалютой_usdt(trc20)_179) was updated."
+    },
+    {
+        "timestamp": "2025-08-26T16:08:08.332311",
+        "action": "Payment Method Updated",
+        "details": "Method 'MonoBank карта (USD)' (monobank_карта__511) was updated."
+    },
+    {
+        "timestamp": "2025-08-26T16:07:51.360191",
+        "action": "Payment Method Added",
+        "details": "Method 'MonoBank карта ' was added."
+    },
+    {
+        "timestamp": "2025-08-26T16:07:10.416814",
+        "action": "Payment Method Updated",
+        "details": "Method 'PrivatBank карта' (privat_card) was updated."
+    },
+    {
+        "timestamp": "2025-08-26T16:07:05.451815",
+        "action": "Payment Method Updated",
+        "details": "Method 'MonoBank карта' (mono_card) was updated."
+    },
+    {
+        "timestamp": "2025-08-26T16:06:45.121707",
+        "action": "Payment Method Updated",
+        "details": "Method 'Посилання MonoBank UAH' (mono_link) was updated."
+    },
+    {
+        "timestamp": "2025-08-26T16:06:23.618060",
+        "action": "Payment Method Updated",
+        "details": "Method 'PrivatBank карта UAH' (privat_card) was updated."
+    },
+    {
+        "timestamp": "2025-08-26T16:06:05.643911",
+        "action": "Payment Method Updated",
+        "details": "Method 'MonoBank карта UAH' (mono_card) was updated."
+    },
+    {
+        "timestamp": "2025-08-26T16:05:43.333571",
+        "action": "Payment Method Added",
+        "details": "Method 'MonoBank карта (EUR)' was added."
+    },
+    {
+        "timestamp": "2025-08-26T16:00:10.878055",
+        "action": "Payment Method Updated",
+        "details": "Method 'Пром оплата' (prom_payment) was updated."
+    },
+    {
+        "timestamp": "2025-08-26T16:00:00.425820",
+        "action": "Payment Method Updated",
+        "details": "Method 'Посилання Монобанк UAH' (mono_link) was updated."
+    },
+    {
+        "timestamp": "2025-08-26T15:59:54.804814",
+        "action": "Payment Method Updated",
+        "details": "Method 'Карта ПриватБанк UAH' (privat_card) was updated."
+    },
+    {
+        "timestamp": "2025-08-26T15:59:43.596962",
+        "action": "Payment Method Updated",
+        "details": "Method 'Карта Монобанк UAH' (mono_card) was updated."
+    },
+    {
+        "timestamp": "2025-08-26T15:59:25.307268",
+        "action": "Payment Method Updated",
+        "details": "Method 'Карта Монобанк' (mono_card) was updated."
+    },
+    {
+        "timestamp": "2025-08-26T15:59:19.622016",
+        "action": "Payment Method Updated",
+        "details": "Method 'Криптовалютой USDT(TRC20)' (криптовалютой_usdt(trc20)_179) was updated."
+    },
+    {
+        "timestamp": "2025-08-26T15:57:35.131396",
+        "action": "File Edited",
+        "details": "File 'app.py' was edited."
+    },
+    {
+        "timestamp": "2025-08-26T15:43:27.644495",
+        "action": "File Edited",
+        "details": "File 'admin.html' was edited."
+    },
+    {
+        "timestamp": "2025-08-26T15:28:34.467868",
+        "action": "File Edited",
+        "details": "File 'admin.html' was edited."
+    },
+    {
+        "timestamp": "2025-08-26T15:16:04.402649",
+        "action": "Payment Method Updated",
+        "details": "Method 'Криптовалютой USDT(TRC20)' (криптовалютой_usdt(trc20)_179) was updated."
+    },
+    {
+        "timestamp": "2025-08-26T15:15:31.013051",
+        "action": "Payment Method Added",
+        "details": "Method 'Криптовалютой USDT(TRC20)' was added."
+    },
+    {
+        "timestamp": "2025-08-26T15:10:29.167412",
+        "action": "Payment Method Updated",
+        "details": "Method 'Пром оплата' (prom_payment) was updated."
+    },
+    {
+        "timestamp": "2025-08-24T14:16:47.019247",
+        "action": "File Edited",
+        "details": "File 'data.json' was edited."
+    },
+    {
+        "timestamp": "2025-08-24T14:16:34.417234",
+        "action": "File Edited",
+        "details": "File 'clients.json' was edited."
+    },
+    {
+        "timestamp": "2025-08-23T22:26:58.604179",
+        "action": "Deal of the Day Set",
+        "details": "Product win11-pro-008 set as deal of the day."
+    },
+    {
+        "timestamp": "2025-08-23T21:28:27.083333",
+        "action": "File Edited",
+        "details": "File 'admin.html' was edited."
+    },
+    {
+        "timestamp": "2025-08-23T20:04:15.014629",
+        "action": "File Edited",
+        "details": "File 'app.py' was edited."
+    },
+    {
+        "timestamp": "2025-08-23T19:54:44.546858",
+        "action": "File Edited",
+        "details": "File 'app.py' was edited."
+    },
+    {
+        "timestamp": "2025-08-23T19:42:36.975350",
+        "action": "File Edited",
+        "details": "File 'app.py' was edited."
+    },
+    {
+        "timestamp": "2025-08-23T17:14:30.840896",
+        "action": "File Edited",
+        "details": "File 'app.py' was edited."
+    },
+    {
+        "timestamp": "2025-08-23T16:58:19.096102",
+        "action": "File Edited",
+        "details": "File 'app.py' was edited."
+    },
+    {
+        "timestamp": "2025-08-22T23:32:14.138327",
+        "action": "Product Updated",
+        "details": "Product 'Microsoft Office 2021 ProPlus' (office2021-012) updated."
+    },
+    {
+        "timestamp": "2025-08-22T23:31:43.800584",
+        "action": "Product Updated",
+        "details": "Product 'Microsoft Office 2019 ProPlus' (office2019-011) updated."
+    },
+    {
+        "timestamp": "2025-08-22T23:31:27.747096",
+        "action": "Product Updated",
+        "details": "Product 'Microsoft Office 2019 ProPlus' (office2019-011) updated."
+    },
+    {
+        "timestamp": "2025-08-22T23:30:51.097045",
+        "action": "Product Updated",
+        "details": "Product 'Microsoft Office 2016 ProPlus' (office2016-010) updated."
+    },
+    {
+        "timestamp": "2025-08-22T23:30:05.464727",
+        "action": "Product Updated",
+        "details": "Product 'Microsoft Office 2013 ProPlus' (office2013-009) updated."
+    },
+    {
+        "timestamp": "2025-08-22T23:29:27.155338",
+        "action": "Product Updated",
+        "details": "Product 'Windows 7 Pro' (win7-pro-002) updated."
+    },
+    {
+        "timestamp": "2025-08-22T23:29:17.963950",
+        "action": "Product Updated",
+        "details": "Product 'Windows 8.1 Home' (win81-home-003) updated."
+    },
+    {
+        "timestamp": "2025-08-22T23:29:11.823764",
+        "action": "Product Updated",
+        "details": "Product 'Windows 8.1 Pro' (win81-pro-004) updated."
+    },
+    {
+        "timestamp": "2025-08-22T23:29:02.947888",
+        "action": "Product Updated",
+        "details": "Product 'Windows 10 Home' (win10-home-005) updated."
+    },
+    {
+        "timestamp": "2025-08-22T23:28:56.454817",
+        "action": "Product Updated",
+        "details": "Product 'Windows 10 Pro' (win10-pro-006) updated."
+    },
+    {
+        "timestamp": "2025-08-22T23:28:42.796897",
+        "action": "Product Updated",
+        "details": "Product 'Windows 11 Home' (win11-home-007) updated."
+    },
+    {
+        "timestamp": "2025-08-22T23:28:30.602961",
+        "action": "Product Updated",
+        "details": "Product 'Windows 11 Pro' (win11-pro-008) updated."
+    },
+    {
+        "timestamp": "2025-08-22T23:27:43.194382",
+        "action": "Product Updated",
+        "details": "Product 'Windows 11 Home' (win11-home-007) updated."
+    },
+    {
+        "timestamp": "2025-08-22T23:27:11.178428",
+        "action": "Product Updated",
+        "details": "Product 'Windows 10 Pro' (win10-pro-006) updated."
+    },
+    {
+        "timestamp": "2025-08-22T23:26:33.059232",
+        "action": "Product Updated",
+        "details": "Product 'Windows 10 Home' (win10-home-005) updated."
+    },
+    {
+        "timestamp": "2025-08-22T23:26:26.854475",
+        "action": "Product Updated",
+        "details": "Product 'Windows 10 Home' (win10-home-005) updated."
+    },
+    {
+        "timestamp": "2025-08-22T23:25:51.301972",
+        "action": "Product Updated",
+        "details": "Product 'Windows 8.1 Pro' (win81-pro-004) updated."
+    },
+    {
+        "timestamp": "2025-08-22T23:25:24.801808",
+        "action": "Product Updated",
+        "details": "Product 'Windows 8.1 Home' (win81-home-003) updated."
+    },
+    {
+        "timestamp": "2025-08-22T23:24:23.951060",
+        "action": "Product Updated",
+        "details": "Product 'Windows 7 Pro' (win7-pro-002) updated."
+    },
+    {
+        "timestamp": "2025-08-22T23:23:56.344437",
+        "action": "Product Updated",
+        "details": "Product 'Windows 7 Pro' (win7-pro-002) updated."
+    },
+    {
+        "timestamp": "2025-08-22T23:23:38.522720",
+        "action": "Product Updated",
+        "details": "Product 'Windows 7 Home' (win7-home-001) updated."
+    },
+    {
+        "timestamp": "2025-08-22T23:22:53.888377",
+        "action": "Product Updated",
+        "details": "Product 'Windows 7 Home' (win7-home-001) updated."
+    },
+    {
+        "timestamp": "2025-08-22T23:21:41.803808",
+        "action": "Product Updated",
+        "details": "Product 'Windows 7 Home' (win7-home-001) updated."
+    },
+    {
+        "timestamp": "2025-08-22T23:04:16.694436",
+        "action": "Client Status Change",
+        "details": "Client 1251880919 was розблоковано."
+    },
+    {
+        "timestamp": "2025-08-22T23:04:13.427228",
+        "action": "Client Status Change",
+        "details": "Client 1251880919 was заблоковано."
+    },
+    {
+        "timestamp": "2025-08-22T16:14:20.759260",
+        "action": "Product Deleted",
+        "details": "Product 'Ліцензія Bohemian Sketch' (748445af-0942-48b4-9745-872be89f138d) deleted."
+    }
+]
