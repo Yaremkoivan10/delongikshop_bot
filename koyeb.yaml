@@ -1,0 +1,16 @@
+name: delongikshop-bot
+services:
+  - name: bot
+    type: worker
+    env:
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      TELEGRAM_ADMIN_CHAT_ID: ${TELEGRAM_ADMIN_CHAT_ID}
+      MQTT_HOST: test.mosquitto.org
+      MQTT_PORT: 1883
+      MQTT_BASE_TOPIC: delongik
+    build:
+      type: buildpack
+    run:
+      command: python app.py
+    instance_type: nano
+    region: fra
