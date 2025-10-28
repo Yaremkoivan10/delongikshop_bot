@@ -2512,7 +2512,6 @@ if __name__ == "__main__":
         bot_thread.start()
 
     # Запускаємо Flask-додаток
-    logging.info("===================================================================")
-    logging.info(f" * Адмін-панель доступна за локальною адресою: http://127.0.0.1:5000/admin.html")
-    logging.info("===================================================================")
-    app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
